@@ -1,0 +1,235 @@
+Punto 1. README / Descarga
+	Se debe documentar en un README todo lo necesario para poder descargar, instalar y ejecutar el sistema. Se debe crear un paquete de descarga con la estructura solicitada
+	Entregar un README en el cual se explican todos y cada uno de los pasos necesarios para acceder al TP, descargarlo, instalarlo y ejecutarlo
+Punto 2. Documentación
+	Se debe documentar lo solicitado (Punto 1)
+Punto 3. Script de Instalación: instalarTP
+	Se debe realizar un script instalarTP para realizar la instalación del sistema
+	El propósito de este comando es realizar la instalación o reparación del sistema
+
+Punto 4. Script Inicializador
+	Se debe realizar un script iniciarambiente para asegurar el entorno de ejecución del proceso
+	El propósito de este comando es preparar el entorno de ejecución del TP (variables de ambiente), asegurar que estén dadas todas las condiciones para la ejecución del sistema (que existan los scripts y las tablas maestras, que estén los permisos, que estén los directorios) e invocar al proceso principal
+Punto 6. arrancarproceso - frenarproceso
+	Se deben realizar dos comandos complementarios arrancarproceso y frenarproceso debido a las características de ejecución del proceso principal
+	buscar en los procesos del sistema
+
+Punto 5. Proceso Principal
+	Se debe realizar un script pprincipal que lee el input, lo valida, graba los archivos de liquidación, graba los archivos de comisiones, duerme un tiempo x y vuelve a empezar
+	Leer las novedades y por cada archivo generar sus archivos de liquidación y el archivo de comisiones con el cálculo de service charge
+
+* Condiciones de Desarrollo y Entrega
+-Todos los comandos deben ser desarrollados en Shell script
+-Todo el sistema debe poder ser ejecutado SIN SER ROOT
+-La documentación es obligatoria
+-Se debe lograr la ejecución de todo el sistema y dar evidencia de ello
+-Se debe realizar una autoevaluación y registrarla en este documento
+-El README debe ser un documento aparte
+-El resto de la documentación del sistema puede estar en este documento
+-Se debe entregar el TP antes del 24 de noviembre de 2020 a las 22 horas.
+-Toda la entrega debe estar subida a un repositorio (como GitHub) y dar acceso a so7508@gmail.com
+-Se debe enviar mail a so7508@gmail.com con el link, adjuntar el archivo README y este documento completo con la autoevaluación realizada
+
+	demonio (2do plano. arrancar y frenar proceso. verificar si esta inicializado. acepta archivos(novedades aceptadas). busca archivos duplicados. )
+	Cuando se clasificaron las novedades en aceptadas y rechazadas, se inicia la apertura y lectura de las novedades aceptadas (otro paso)
+	Control del registro TFH
+	Control de Registros TFD
+	Registros TFC - compensación
+		Salida 1 – Grabar el archivo de liquidaciones
+		Salida 2 – Grabar el archivo de comisiones (Calcular el service charge)
+	Diseño del archivo de Comisiones
+	Cuando se termina el ciclo, el proceso principal duerme un minuto y se reinicia.
+
+************************************************************************************************************************************************************
+************************************************************************************************************************************************************
+************************************************************************************************************************************************************
+************************************************************************************************************************************************************
+Descripción
+Se reciben archivos con información de transacciones efectuadas con tarjetas de crédito o débito. Cada archivo corresponde a un comercio/lote. Los comercios (MERCHANT_CODE) se validan con el archivo comercios.txt
+Cada comercio envía varios lotes, cada lote tiene una o mas transacciones.
+• Transacciones de Débito = Compras = PROCESSING_CODE = 000000
+• Transacciones de Crédito = Anulaciones = PROCESSING_CODE = 111111
+El objetivo del TP es crear archivos de liquidación (SETTLEMENT FILE) con la información de input previamente validada y depurada.
+• Uno por cada marca VISA MASTER AMEX
+• Otro para el resto de las marcas SP (sistema propio)
+También se debe calcular el costo del servicio (SERVICE_CHARGE) según el medio de pago de que se trate y grabar el SERVICE_CHARGE en el archivo de comisiones.
+• Los medios de pago homologados (ID_PAYMENT_METHOD) se validan con el archivo tarjetashomologadas.txt
+• Tasa para compras = DEBIT RATE
+• Tasa para anulaciones = CREDIT RATE
+
+
+*Propósito
+Leer las novedades y por cada archivo generar sus archivos de liquidación y el archivo de comisiones con el cálculo de service charge
+
+*Tipo de Proceso
+Este comando es un proceso del tipo demonio, daemon o dæmon (de sus siglas en inglés Disk And Execution Monitor).
+Se ejecuta en segundo plano en vez de ser controlado directamente por el usuario (es un proceso no interactivo).
+Cada vez que termina su trabajo duerme un tiempo “x” y vuelve a empezar, es decir, que a menos que se detenga con frenarproceso, este proceso no tiene condición de fin.
+¿Por qué existe esto? Para simular un enlace permanente en donde los clientes pueden enviar sus lotes y el sistema siempre esta disponible para recibirlos.
+Recuerde no dejar archivos de novedades durante la instalación, esos archivos se depositan manualmente
+Para la resolución considerar que el contenido del archivo de novedades es siempre “liviano” “con pocos registros”
+Los pasos de la explicación son a modo indicativo, se puede alterar el orden siempre y cuando no se altere el propósito del script
+
+*Verificar inicializacion
+El proceso principal antes de empezar a trabajar debe determinar si el sistema esta inicializado, porque si no lo está no debe ejecutar. Sin ambiente no hay proceso.
+
+*Contar ciclos
+Inicializar el ciclo del proceso en 1. Ir sumando uno cada vez que se repite un ciclo. Grabar en log “voy por el ciclo xx”
+
+*Lectura de novedades
+Leer los nombres de los archivos que están en el directorio de input (variable de ambiente) y si hay algún archivo ver si el archivo es aceptable
+Si no hay nada dormir un tiempo x= un minuto y volver a empezar
+
+*Condiciones de aceptabilidad
+Que el nombre del archivo este correcto, si no es correcto no es aceptable
+Que el archivo no este duplicado, si vino duplicado no es aceptable
+Que el archivo no este vacío, si está vacío no es aceptable
+Que sea un archivo regular, de texto, legible (si es otra cosa por ejemplo una imagen, no es aceptable)
+
+*¿Qué se hace cuando un archivo no es aceptable?
+Por regla general del TP nada se borra.
+Los archivos inaceptables se mueven tal como vienen al repositorio de rechazados
+Siempre grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo
+
+*¿Cuándo el nombre del archivo es correcto?
+El formato correcto para los nombres de los archivos de novedades es:
+• C<MerchantCode>_Lote<BatchNumber>
+	o Ejemplo: C34567902_Lote0023
+• El MerchantCode debe existir en la tabla maestra de comercios
+• Para simplificar las pruebas solo se requiere que el número de lote sea un numero de 4 dígitos
+
+
+****Diseño del registro de comercios
+Tabla maestra de comercios: $DIRMAE/comercios.txt
+Separador de campos: , (coma)
+
+-¿Cómo se determina que un archivo está duplicado?
+Si en el directorio de procesados tenemos un archivo con nombre igual al recién llegado, este ultimo se lo considera duplicado.
+-¿Qué se hace cuando un archivo es aceptable?
+Los archivos aceptables se mueven tal como vienen al repositorio de novedades aceptadas.
+Siempre grabar en el log el nombre del archivo aceptado.
+-Lectura de novedades aceptadas
+Cuando se clasificaron las novedades en aceptadas y rechazadas, se inicia la apertura y lectura de las novedades aceptadas
+-Tipos de Registros del Archivo de novedades aceptadas
+El archivo de novedades contiene dos tipos de registros
+• Un registro cabecera
+• N Registros de transacciones
+
+****Diseño del registro cabecera (TFH)
+Archivo de Novedades, Registro Cabecera
+Separador de campos: , (coma)
+
+-Control del registro TFH
+Si el registro de cabecera no existe, se rechaza todo el archivo
+Si el registro de cabecera indica un MERCHANT_CODE distinto al que viene en el nombre externo del archivo, se rechaza todo el archivo
+Si el registro de cabecera indica NUMBER_OF_TRX_RECORDS = 00000, se rechaza todo el archivo.
+NUMBER_OF_TRX_RECORDS nos indica cuantos registros de transacciones vienen a continuación, si esto no coincide con lo que realmente viene, se rechaza todo el archivo
+No se piden mas validaciones para el TFH pero si quiere agregarlas, indique en la autoevaluacion que incorpora.
+
+-Para rechazar el archivo se lo mueve tal como vino al repositorio de rechazados
+• Siempre grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo
+
+****Diseño del registro de transacciones (TFD)
+Archivo de Novedades, Registro de Transacciones
+Separador de campos: , (coma)
+
+-Control de Registros TFD
+Si el RECORD_TYPE de algún registro TFD no indica el valor TFD, se rechaza todo el archivo
+Si el RECORD_NUMBER de algún registro TFD no se corresponde con el numero de registro correcto, se rechaza todo el archivo
+Si el ID_PAYMENT_METHOD de algún registro TFD no indica un valor que existe en la tabla de tarjetas homologadas, se rechaza todo el archivo
+Si el PROCESSING_CODE de algún registro TFD no indica un valor permitido (000000 o 111111), se rechaza todo el archivo
+No se piden mas validaciones para el TFD pero si quiere agregarlas, indique en la autoevaluacion que incorpora.
+Para rechazar el archivo se lo mueve tal como vino al repositorio de rechazados
+Siempre grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo y en que registro se presenta la anomalía
+
+****Diseño del registro de tarjetas homologadas
+Tabla de Tarjetas Homologadas: $DIRMAE/tarjetashomologadas.txt
+Separador de campos: , (coma)
+
+****Registros TFC - compensación
+Hay dos tipos de transacciones
+• Los débitos se identifican por el PROCESSING_CODE = 000000
+• Los créditos se identifican por el PROCESSING_CODE = 111111
+Si dentro del mismo archivo tenemos un registro de débito (compras) y un registro de crédito (anulación de la compra) con el mismo ID_TRANSACTION, y ambos tienen el mismo TRX_AMOUNT entonces esos registros se compensan
+
+****Salida 1 – Grabar el archivo de liquidaciones
+Grabar las transacciones que no han sido compensadas en el archivo de liquidación (SETTLEMENT FILE) correspondiente.
+Si el archivo no existe, se crea
+Si el archivo existe, se agregan los nuevos registros
+El nombre de archivo de liquidación es SETTLEMENT_FILE-año-mes.txt, dónde
+• SETTLEMENT_FILE: este prefijo se obtiene de la tabla maestra tarjetashomologadas.txt, a partir del ID_PAYMENT_METHOD
+• Año del FILE_CREATION_DATE
+• Mes del FILE_CREATION_DATE
+
+****Diseño del Archivo de liquidación
+Archivo de Liquidación:
+	$DIROUT/VISA-aaaaa-mm.txt
+	$DIROUT/MASTER-aaaaa-mm.txt
+	$DIROUT/AMEX-aaaaa-mm.txt
+	$DIROUT/SP-aaaaa-mm.txt
+Separador de campos: , (coma)
+*EJEMPLO EN EL PDF
+
+****Salida 2 – Grabar el archivo de comisiones
+Calcular el service charge de cada transacción y grabar el archivo de comisiones correspondiente.
+Si el archivo no existe, se crea
+Si el archivo existe, se agregan los nuevos registros
+El nombre de archivo de comisiones es MERCHANT_CODE_GROUP-año-mes.txt, dónde
+• MERCHANT_CODE_GROUP: este prefijo se obtiene de la tabla maestra comercios.txt, a partir del MERCHANT_CODE
+• Año del FILE_CREATION_DATE
+• Mes del FILE_CREATION_DATE
+
+****Cálculo del Service charge
+1) Determinar el monto base para el calculo
+	El monto base para el cálculo es el TRX_AMOUNT del registro TFD
+	En este campo, los primeros diez dígitos representan la parte entera, los siguientes 2 dígitos representan la parte decimal.
+	Por ejemplo
+	TRX_AMOUNT = 000000534050, el monto es $5.340,50
+	TRX_AMOUNT = 000000007300, el monto es $73,00
+2) Determinar la tasa aplicable a la transacción
+	Ir a la tabla de tarjetas homologadas y obtener el registro correspondiente al ID_PAYMENT_METHOD del registro TFD
+	Si el PROCESSING_CODE del registro TFD es 000000 obtenemos el DEBIT_RATE (Tasa de comisión para los débitos)
+	Si el PROCESSING_CODE del registro TFD es 111111 obtenemos el CREDIT_RATE (Tasa de comisión para los créditos)
+	En este campo, los primeros dos dígitos representan la parte entera, los siguientes 4 dígitos representan la parte decimal.
+	Por ejemplo
+	DEBIT_RATE = 010000, la tasa es del 1,0000 %
+	CREDIT_RATE = 005000, la tasa es del 0,5000 %
+3) Calcular el service charge
+	A = TRX_AMOUNT / 100: para obtener el monto con 2 dígitos decimales
+	B = RATE / 10000: para obtener el rate con 4 dígitos decimales
+	C = B / 100: para obtener el coeficiente de calculo
+	D = A * C: para obtener el monto del service charge
+	E = D * 10000 y rellenar hasta completar 12 posiciones con ceros a la izquierda: para obtener el monto del service charge a grabar*
+	* service charge a grabar: En ese campo los primeros ocho dígitos representan la parte entera, los siguientes 4 dígitos representan la parte decimal. Siempre llenar con ceros a la izquierda
+	Por lo tanto, puede EVITAR dividir por 10000 en el paso B y multiplicar por 10000 en el paso E
+
+*Varios ejemplos de Service charge para operaciones de Débito y Credito (PDF)
+
+****Diseño del archivo de Comisiones
+Archivo de Comisiones
+	$DIROUT/comisiones/merchant_code_group-aaaaa-mm.txt
+Separador de campos: , (coma)
+*EJEMPLO PDF PAG 23
+
+****Contadores
+Cuando se logra procesar un archivo aceptado se debe grabar en el log
+INPUT
+Nombre del archivo procesado; Cantidad de transacciones de input
+OUTPUT
+Nombre del archivo de liquidación de output; Cantidad de transacciones de output
+Nombre del archivo de liquidación de output; Cantidad de transacciones de output
+Nombre del archivo de comisiones de output
+
+Ejemplo:
+	INPUT
+	C12345681_Lote1234; 9 registros
+	OUTPUT
+	VISA_Lote1234; 5 registros
+	12345678-2020-07.txt
+
+****Evitar Reprocesos
+Cuando se logra procesar un archivo aceptado se lo mueve a DIRPROC para evitar su reproceso
+
+****Fin de ciclo
+Cuando se termina el ciclo, el proceso principal duerme un minuto y se reinicia.
+

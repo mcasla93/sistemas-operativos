@@ -1,0 +1,32 @@
+12345678;12345678;5211;Tiendas de alimentos
+12345679;12345678;5229;Tiendas de alimentos minoristas
+12345680;12345678;5212;Tiendas de golosinas
+12345681;12345678;5221;Tiendas de mascotas
+23456789;23456789;5216;Tiendas de ropa
+23456790;23456789;5214;Tiendas de zapatos
+23456791;23456789;5227;Tiendas de artículos deportivos
+23456792;23456789;5977;Tiendas de equipaje y marroquinería
+34567890;34567890;5218;Tiendas de electrónica
+34567891;34567890;5232;Tiendas de música
+34567892;34567890;5218;Tiendas de electrónica
+34567893;34567890;5232;Tiendas de música
+45678901;45678901;5977;Tiendas de equipaje y marroquinería
+45678902;45678901;5214;Tiendas de zapatos
+45678903;45678901;5977;Tiendas de equipaje y marroquinería
+45678904;45678901;5214;Tiendas de zapatos
+56789012;56789012;5211;Tiendas de alimentos
+56789013;56789012;5221;Tiendas de mascotas
+56789014;56789012;5221;Tiendas de mascotas
+56789015;56789012;5221;Tiendas de mascotas
+67890123;67890123;5232;Tiendas de música
+67890124;67890123;5228;Tiendas de artículos de librería
+67890125;67890123;5232;Tiendas de música
+78901234;78901234;5215;Tiendas de joyería, relojería
+78901235;78901234;5973;Tiendas de artículos religiosos
+78901236;78901234;5950;Tiendas de cristalería y cristal
+89012345;89012345;5232;Tiendas de muebles
+89012346;89012345;5222;Tiendas de electrodomésticos
+89012347;89012345;5950;Tiendas de cristalería y cristal
+90123456;90123456;5222;Tiendas de electrodomésticos
+90123457;90123456;5222;Tiendas de muebles
+90123458;90123456;5222;Tiendas de electrodomésticos
