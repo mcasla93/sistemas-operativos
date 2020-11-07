@@ -128,6 +128,7 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
         continue
     fi
 
+    #reg_comercio devuelve registro de ARCHIVOCOMERCIOS donde ocurre merchantCode
     # if [ $OK -eq 1 ]; then
     # mv "$DIRINPUT/$novedades" $DIRINPUTOK
     # fi
