@@ -9,11 +9,11 @@
 
 
 echo "Verificamos que el proceso este corriendo!!!!!"
+# tomo el numero de proceso
+ProcessID=$(pgrep "yes")
+echo numero de proceso $ProcessID
 
-
-read a
-
-echo el texto es $a
+kill $ProcessID
 
 
 ########################################################################

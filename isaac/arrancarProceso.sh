@@ -20,9 +20,11 @@ fi
 
 
 ### verificar si el proceso ya esrta corriendo #################
-
-
-echo "verificando si el proceso ya esta corriendo....."
-
+# echo "verificando si el proceso ya esta corriendo....."
+# falta el chequeo
 
 ################################################################
+# lanzamos el proceso principal
+# si usamos top vemos que el proceso yes se empezo a ejecutar en background
+./procesoPral.sh
+
