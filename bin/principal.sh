@@ -19,6 +19,7 @@ DIRINPUTOK="../input/ok"
 # Directorio de rechazados: $GRUPO/rechazos
 DIRRECHAZO="../rechazos"
 # Directorio de lotes procesados: $GRUPO/lotes
+DIRLOTES="../lotes"
 # Directorio de transacciones: $GRUPO/output
 # **Directorio de comisiones: $GRUPO/output/comisiones
 
@@ -127,13 +128,34 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
         mv "$DIRINPUT/$novedades" $DIRRECHAZO
         continue
     fi
-
     #reg_comercio devuelve registro de ARCHIVOCOMERCIOS donde ocurre merchantCode
     # if [ $OK -eq 1 ]; then
     # mv "$DIRINPUT/$novedades" $DIRINPUTOK
     # fi
     #OK=1
+    
+    # Si en el directorio de procesados tenemos un archivo con nombre igual al recién llegado, este ultimo
+    # se lo considera duplicado.
+    # echo "$DIRLOTES/$novedades"
+    if [ -f "$DIRLOTES/$novedades" ]; then
+        echo "El lote $novedades ya fue procesado"
+        mv "$DIRINPUT/$novedades" $DIRRECHAZO
+        continue
+    fi
+
+    ##REVISAR##
+    #Verifico que el archivo a procesar no este vacio
+
+    #if [ -s "$novedades" ]; then
+    #    echo "El archivo esta vacio, NO ES ACEPTABLE"
+    #    #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+    #    continue
+    #fi
+
+    #Validar que es un archivo regular, de texto, legible
 done
+
+
 
 # for archivo in `ls $LLEGADA_D`; do
 
@@ -202,9 +224,8 @@ done
 # • Un registro cabecera
 # • N Registros de transacciones
 
-# for archivo in `ls $DIRINPUTOK | grep "^[^_].*_[0-9]\{6,6\}\.dat$"`; do
-#   magia
-# done
+
+
 
 
 ############################
@@ -222,6 +243,19 @@ done
 
 # -Para rechazar el archivo se lo mueve tal como vino al repositorio de rechazados
 # • Siempre grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo
+
+#for novedades in `ls $DIRINPUTOK | grep -v /`; do
+
+    #verifico que el archivo tenga cabecera
+
+    #verifico merchanCode del nombre del archivo
+    #merchantCode=`echo $novedades | cut -d '_' -f1 | sed 's/.\{1\}//'`
+    #echo $merchantCode
+    #comparar con tercer columna
+
+    #verifico que la columna 7 sea mayor a 0000
+    
+#done
 
 ############################
 ####    Diseño del registro de transacciones (TFD)
