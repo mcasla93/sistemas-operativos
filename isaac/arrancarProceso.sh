@@ -9,7 +9,11 @@
 ### verificar el ambiente #######################################
 
 echo "verificando el ambiente......"
-
+./ambienteInicializado.sh
+if [ $? -ne 0 ]; then
+	echo "ejecute [ . ./incializarSistema.sh ]"
+    exit
+fi
 
 ################################################################
 

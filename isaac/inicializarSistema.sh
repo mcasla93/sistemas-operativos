@@ -1,6 +1,7 @@
 #! /bin/bash
 
-MIVAR="var"
-export MIVAR
+AMBIENTE="iniciado"
+export AMBIENTE="iniciado"
 
-echo ambiente inicializado......
+
+echo el ambiente fue inicializado......
