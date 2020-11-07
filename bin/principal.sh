@@ -35,6 +35,7 @@ DIRLOTES="../lotes"
 #Definir variables de la rutina
 #TIEMPODORMIDO=unminuto
 ARCHIVOCOMERCIOS="$DIRMAESTRO/comercios.txt"
+ARCHIVOTJTHOMOLOGADAS="$DIRMAESTRO/tarjetashomologadas.txt"
 #Definir constantes (mensajes, log..)
 
 #Contar ciclos
@@ -95,182 +96,160 @@ ARCHIVOCOMERCIOS="$DIRMAESTRO/comercios.txt"
 # Siempre grabar en el log el nombre del archivo aceptado.
 
 #cumple mando a $DIRINPUTOK, sino a $DIRRECHAZO
-OK=1
 
 for novedades in `ls -p $DIRINPUT | grep -v /`; do
-    # Que el nombre del archivo este correcto, si no es correcto no es aceptable
-        # • C<MerchantCode>_Lote<BatchNumber> o Ejemplo: C34567902_Lote0023
-        # • El MerchantCode debe existir en la tabla maestra de comercios
-        # • Para simplificar las pruebas solo se requiere que el número de lote sea un numero de 4 dígitos
-    # Que el archivo no este duplicado, si vino duplicado no es aceptable
-        # Si en el directorio de procesados tenemos un archivo con nombre igual al recién llegado, este ultimo se lo considera duplicado.
-    # Que el archivo no este vacío, si está vacío no es aceptable
-    # Que sea un archivo regular, de texto, legible (si es otra cosa por ejemplo una imagen, no es aceptable)
-
-    batchNumber=`echo $novedades | cut -d '_' -f2 | sed 's/Lote//' | sed 's/\.[a-z]*//'` 
-    #echo $batchNumber
-    batchNumberCumple=`echo $batchNumber | grep "\<[0-9][0-9][0-9][0-9]\>"`
-    if [ -z $batchNumberCumple ]; then
- 		echo "batchNumber INCORRECTO, $batchNumber"
-        mv "$DIRINPUT/$novedades" $DIRRECHAZO
-        continue
- 	fi
-
-    merchantCode=`echo $novedades | cut -d '_' -f1 | sed 's/.\{1\}//'`
-    #echo $merchantCode
-
-    #el merchantCode tiene que estar en la tabla maestra de comercios, ARCHIVOCOMERCIOS...
-    reg_comercio=`grep "^$merchantCode;[^;]*;[^;]*;[^;]*$" $ARCHIVOCOMERCIOS`
-    echo $reg_comercio
-    if [ -z "$reg_comercio" ]; then
-        #el if me pide comillas para tratar como una sola cadena..
-        echo "EL MerchantCode, $merchantCode; no corresponde a un Comercio"
-        mv "$DIRINPUT/$novedades" $DIRRECHAZO
+    #Verifico que el archivo a procesar no este vacio
+    if [ ! -s "$DIRINPUT/$novedades" ]; then
+        echo "El archivo $novedades esta vacio, NO ES ACEPTABLE"
+        #mv "$DIRINPUT/$novedades" $DIRRECHAZO
         continue
     fi
-    #reg_comercio devuelve registro de ARCHIVOCOMERCIOS donde ocurre merchantCode
-    # if [ $OK -eq 1 ]; then
-    # mv "$DIRINPUT/$novedades" $DIRINPUTOK
-    # fi
-    #OK=1
-    
+
+    #Validar que es un archivo regular, de texto, legible
+    if [ ! "$(file $DIRINPUT/$novedades)" = "$DIRINPUT/$novedades: ASCII text" ]; then
+        echo "El archivo $novedades es ilegible, NO ES ACEPTABLE"
+        #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+        continue
+    fi
+    #igual que arriba pero con regex.. ???
+    #if [[ ! "$(file "$DIRINPUT/$novedades")" =~ ': ASCII text'$ ]]; then
+    #    echo $DIRINPUT/$novedades no es legible
+    #fi
+
     # Si en el directorio de procesados tenemos un archivo con nombre igual al recién llegado, este ultimo
     # se lo considera duplicado.
-    # echo "$DIRLOTES/$novedades"
     if [ -f "$DIRLOTES/$novedades" ]; then
         echo "El lote $novedades ya fue procesado"
         mv "$DIRINPUT/$novedades" $DIRRECHAZO
         continue
     fi
 
-    ##REVISAR##
-    #Verifico que el archivo a procesar no este vacio
+    # El número de lote sea un numero de 4 dígitos
+    batchNumber=`echo $novedades | cut -d '_' -f2 | sed 's/Lote//' | sed 's/\.[a-z]*//'` 
+    batchNumberCumple=`echo $batchNumber | grep "\<[0-9][0-9][0-9][0-9]\>"`
+    if [ -z $batchNumberCumple ]; then
+ 		echo "batchNumber $batchNumber, INCORRECTO"
+        mv "$DIRINPUT/$novedades" $DIRRECHAZO
+        continue
+ 	fi
 
-    #if [ -s "$novedades" ]; then
-    #    echo "El archivo esta vacio, NO ES ACEPTABLE"
-    #    #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-    #    continue
-    #fi
+    # El MerchantCode debe existir en la tabla maestra de comercios
+    merchantCode=`echo $novedades | cut -d '_' -f1 | sed 's/.\{1\}//'`
+    reg_comercio=`grep "^$merchantCode;[^;]*;[^;]*;[^;]*$" $ARCHIVOCOMERCIOS`
+    if [ -z "$reg_comercio" ]; then
+        #el if me pide comillas para tratar como una sola cadena..
+        echo "EL MerchantCode, $merchantCode; no corresponde a un Comercio"
+        mv "$DIRINPUT/$novedades" $DIRRECHAZO
+        continue
+    fi
 
-    #Validar que es un archivo regular, de texto, legible
+    ############################
+    #### Apertura y lectura de las novedades aceptadas
+    ############################
+
+    # -Lectura de novedades aceptadas
+    # Cuando se clasificaron las novedades en aceptadas y rechazadas, se inicia la apertura y lectura de las novedades aceptadas
+    # -Tipos de Registros del Archivo de novedades aceptadas
+    # El archivo de novedades contiene dos tipos de registros
+    # • Un registro cabecera (TFH)
+    # • N Registros de transacciones (TFD)
+
+    esCabecera=1
+    lineaLeida=0
+    #########para agregar una validacion nuestra..
+    ##chequeo que el RECORD_NUMBER de TFH coincida con el numero 1 (lectura inicial)
+    ##como pasa con la validacion de TFD
+    ##no pude meterlo en la regex del grep
+
+    while read registroNovedad; do
+        #EMPIEZO A LEER LAS NOVEDADES
+        lineaLeida=`expr $lineaLeida + 1`
+        
+        if [ $esCabecera -eq 1 ]; then
+     		#leo registro 1 -> TFH (dice cuantos tfd vienen)
+            ############################
+            ####    Diseño del registro cabecera (TFH)
+            ############################
+            # • Siempre grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo
+            #RECORD_TYPE;RECORD_NUMBER;MERCHANT_CODE_;BATCH_NUMBER;FILE_CREATION_DATE;FILE_CREATION_TIME;NUMBER_OF_TRX_RECORDS
+
+            # Si el registro de cabecera no existe, se rechaza todo el archivo
+            # Si el registro de cabecera indica un MERCHANT_CODE distinto al que viene en el nombre externo del archivo, se rechaza todo el archivo
+            cabeceraOk=`echo $registroNovedad | grep -c "^TFH;[^;]*;$merchantCode;[^;]*;[^;]*;[^;]*;[^;]*;;;;;;;$"`
+            if [ $cabeceraOk -ne 1 ]; then
+                echo "Error en registro de cabecera. El archivo $novedades NO ES ACEPTABLE"
+                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                #continue
+            fi
+
+            # Si el registro de cabecera indica NUMBER_OF_TRX_RECORDS = 00000, se rechaza todo el archivo.
+            numberTrxRecords=`echo $registroNovedad | cut -d ';' -f7`
+            if [ $numberTrxRecords -eq 0 ]; then
+                echo "NUMBER_OF_TRX_RECORDS = 0. El archivo $novedades NO ES ACEPTABLE"
+                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                #continue
+            fi
+
+            # NUMBER_OF_TRX_RECORDS nos indica cuantos registros de transacciones vienen a continuación, si esto no coincide con lo que realmente viene, se rechaza todo el archivo
+            cantRegNovedades=`wc -l < "$DIRINPUT/$novedades"`
+            cantRegTFDNovedades=`expr $cantRegNovedades - 1`
+            if [ $cantRegTFDNovedades -ne $numberTrxRecords ]; then
+                echo "NUMBER_OF_TRX_RECORDS inconsistente. El archivo $novedades NO ES ACEPTABLE"
+                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                #continue
+            fi
+            
+            esCabecera=0
+            #chequear que se setee bien este flag de cabeceras cuando rompe
+        else
+            ############################
+            ####    Diseño del registro de transacciones (TFD)
+            ############################
+            # RECORD_TYPE;RECORD_NUMBER;ID_TRANSACTION;APPROVAL_CODE;ID_PAYMENT_METHOD:PAN_FIRST_SIX;PAN_LAST_FOUR;CARD_EXP_DATE;TRX_CREATION_DATE;TRX_CREATION_TIME;TRX_AMOUNT;PROCESSING_CODE;TRX_CURRENCY_CODE;TICKET_NUMBER
+            # Para rechazar el archivo se lo mueve tal como vino al repositorio de rechazados
+            # Siempre grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo y en que registro se presenta la anomalía
+
+            # Si el RECORD_TYPE de algún registro TFD no indica el valor TFD, se rechaza todo el archivo
+            transaccionOk=`echo $registroNovedad | grep -c "^TFD;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*$"`
+            if [ $transaccionOk -ne 1 ]; then
+                echo $registroNovedad
+                echo "Error RECORD_TYPE en registro de transaccion. El archivo $novedades NO ES ACEPTABLE"
+                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                break
+            fi
+
+            # Si el RECORD_NUMBER de algún registro TFD no se corresponde con el numero de registro correcto, se rechaza todo el archivo
+            recordNumerTransaccion=`echo $registroNovedad | cut -d ';' -f2`
+            if [ `expr $recordNumerTransaccion - $lineaLeida` -ne 0 ]; then
+                echo "RECORD_NUMBER inconsistente. El archivo $novedades NO ES ACEPTABLE"
+                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                #continue
+            fi
+
+            # Si el ID_PAYMENT_METHOD de algún registro TFD no indica un valor que existe en la tabla de tarjetas homologadas, se rechaza todo el archivo
+            idPaymentMethod=`echo $registroNovedad | cut -d ';' -f5`
+            reg_tjtHomologada=`grep "^$idPaymentMethod;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*$" $ARCHIVOTJTHOMOLOGADAS`
+            if [ -z "$reg_tjtHomologada" ]; then
+                #el if me pide comillas para tratar como una sola cadena..
+                echo "EL idPaymentMethod, $idPaymentMethod; no corresponde a una Tarjeta Homologada"
+                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                #continue
+            fi
+
+            # Si el PROCESSING_CODE de algún registro TFD no indica un valor permitido (000000 o 111111), se rechaza todo el archivo
+            # se deberia poder validar cuando se valida el record type. Meter regex (000000|111111)
+            # no logro validar con regex el OR 000000|111111
+            #processingCodeTransaccion=`echo $registroNovedad | cut -d ';' -f12 | grep "^(000000|111111){1}$"`
+            #processingCodeTransaccion=`echo $registroNovedad | cut -d ';' -f12 | sed '/^(000000|111111)$/p'`
+            #echo $processingCodeTransaccion
+        fi
+        
+ 	done < "$DIRINPUT/$novedades"
+
+    esCabecera=1
+    lineaLeida=0
+
 done
-
-
-
-# for archivo in `ls $LLEGADA_D`; do
-
-# 	filial=`echo $archivo | cut -d '.' -f1`
-# 	fecha=`echo $archivo | cut -d '.' -f2` #aaaamm > 201710
-
-# 	if [ $fecha -lt "201710" ]; then
-# 		mv "$LLEGADA_D/$archivo" $ERROR_D
-# 		continue
-# 	fi
-
-# 	#FILIAL_F: codFilial;descrFilial;direccion
-# 	reg_filial=`grep "^$filial;[^;]*;[^;]*$" $FILIAL_F`
-
-# 	if [ -z $reg_filial ]; then
-# 		mv "$LLEGADA_D/$archivo" $ERROR_D	
-# 		continue
-# 	fi
-
-# 	while read registro; do
-# 		#leo archivo llegada
-# 		#codProducto;cantidad;valor;fecha
-# 		codProducto=`echo $registro | cut -d ';' -f1`
-
-# 		reg_productos=`grep "^$codProducto;[^;]*;[^;]*$" $PRODUCTOS_F`
-# 		#codigoProducto;descr;prodMinima
-
-# 		if [ -z $reg_productos ]; then
-# 			#echo $registro >> $ERROR_F
-# 			mv "$LLEGADA_D/$archivo" $ERROR_D
-# 			OK=0
-# 			break
-# 		fi
-
-# 		if [ $1 = "-m" ]; then
-# 			#chequeo produccion minima
-# 			cantidad=`echo $registro | cut -d ';' -f2`
-# 			prodMinima=`echo $reg_productos | cut -d ';' -f3`
-
-# 			if [ $cantidad -le $prodMinima ]; then
-# 				mv "$LLEGADA_D/$archivo" $ERROR_D
-# 				OK=0
-# 				break
-# 			fi
-# 		fi
-
-# 	done < "$LLEGADA_D/$archivo"
-
-# 	if [ $OK -eq 1 ]; then
-# 		mv "$LLEGADA_D/$archivo" $VALIDADOS_D
-# 	fi
-
-# 	OK=1
-
-# done
-
-
-############################
-#### Apertura y lectura de las novedades aceptadas
-############################
-
-# -Lectura de novedades aceptadas
-# Cuando se clasificaron las novedades en aceptadas y rechazadas, se inicia la apertura y lectura de las novedades aceptadas
-# -Tipos de Registros del Archivo de novedades aceptadas
-# El archivo de novedades contiene dos tipos de registros
-# • Un registro cabecera
-# • N Registros de transacciones
-
-
-
-
-
-############################
-####    Diseño del registro cabecera (TFH)
-############################
-# Archivo de Novedades, Registro Cabecera
-# Separador de campos: , (coma)
-
-# -Control del registro TFH
-# Si el registro de cabecera no existe, se rechaza todo el archivo
-# Si el registro de cabecera indica un MERCHANT_CODE distinto al que viene en el nombre externo del archivo, se rechaza todo el archivo
-# Si el registro de cabecera indica NUMBER_OF_TRX_RECORDS = 00000, se rechaza todo el archivo.
-# NUMBER_OF_TRX_RECORDS nos indica cuantos registros de transacciones vienen a continuación, si esto no coincide con lo que realmente viene, se rechaza todo el archivo
-# No se piden mas validaciones para el TFH pero si quiere agregarlas, indique en la autoevaluacion que incorpora.
-
-# -Para rechazar el archivo se lo mueve tal como vino al repositorio de rechazados
-# • Siempre grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo
-
-#for novedades in `ls $DIRINPUTOK | grep -v /`; do
-
-    #verifico que el archivo tenga cabecera
-
-    #verifico merchanCode del nombre del archivo
-    #merchantCode=`echo $novedades | cut -d '_' -f1 | sed 's/.\{1\}//'`
-    #echo $merchantCode
-    #comparar con tercer columna
-
-    #verifico que la columna 7 sea mayor a 0000
-    
-#done
-
-############################
-####    Diseño del registro de transacciones (TFD)
-############################
-# Archivo de Novedades, Registro de Transacciones
-# Separador de campos: , (coma)
-
-# -Control de Registros TFD
-# Si el RECORD_TYPE de algún registro TFD no indica el valor TFD, se rechaza todo el archivo
-# Si el RECORD_NUMBER de algún registro TFD no se corresponde con el numero de registro correcto, se rechaza todo el archivo
-# Si el ID_PAYMENT_METHOD de algún registro TFD no indica un valor que existe en la tabla de tarjetas homologadas, se rechaza todo el archivo
-# Si el PROCESSING_CODE de algún registro TFD no indica un valor permitido (000000 o 111111), se rechaza todo el archivo
-# No se piden mas validaciones para el TFD pero si quiere agregarlas, indique en la autoevaluacion que incorpora.
-# Para rechazar el archivo se lo mueve tal como vino al repositorio de rechazados
-# Siempre grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo y en que registro se presenta la anomalía
 
 ############################
 ####    Registros TFC - compensación
@@ -372,3 +351,60 @@ done
 # ****Fin de ciclo
 # Cuando se termina el ciclo, el proceso principal duerme un minuto y se reinicia.
 
+
+
+#####codigo de un proceso
+# for archivo in `ls $LLEGADA_D`; do
+
+# 	filial=`echo $archivo | cut -d '.' -f1`
+# 	fecha=`echo $archivo | cut -d '.' -f2` #aaaamm > 201710
+
+# 	if [ $fecha -lt "201710" ]; then
+# 		mv "$LLEGADA_D/$archivo" $ERROR_D
+# 		continue
+# 	fi
+
+# 	#FILIAL_F: codFilial;descrFilial;direccion
+# 	reg_filial=`grep "^$filial;[^;]*;[^;]*$" $FILIAL_F`
+
+# 	if [ -z $reg_filial ]; then
+# 		mv "$LLEGADA_D/$archivo" $ERROR_D	
+# 		continue
+# 	fi
+
+# 	while read registro; do
+# 		#leo archivo llegada
+# 		#codProducto;cantidad;valor;fecha
+# 		codProducto=`echo $registro | cut -d ';' -f1`
+
+# 		reg_productos=`grep "^$codProducto;[^;]*;[^;]*$" $PRODUCTOS_F`
+# 		#codigoProducto;descr;prodMinima
+
+# 		if [ -z $reg_productos ]; then
+# 			#echo $registro >> $ERROR_F
+# 			mv "$LLEGADA_D/$archivo" $ERROR_D
+# 			OK=0
+# 			break
+# 		fi
+
+# 		if [ $1 = "-m" ]; then
+# 			#chequeo produccion minima
+# 			cantidad=`echo $registro | cut -d ';' -f2`
+# 			prodMinima=`echo $reg_productos | cut -d ';' -f3`
+
+# 			if [ $cantidad -le $prodMinima ]; then
+# 				mv "$LLEGADA_D/$archivo" $ERROR_D
+# 				OK=0
+# 				break
+# 			fi
+# 		fi
+
+# 	done < "$LLEGADA_D/$archivo"
+
+# 	if [ $OK -eq 1 ]; then
+# 		mv "$LLEGADA_D/$archivo" $VALIDADOS_D
+# 	fi
+
+# 	OK=1
+
+# done
