@@ -5,20 +5,52 @@
 INSTALL="install"
 REPAIR="repair"
 
+OK=1;
+
 #Nombres reservado
 RESERVED_NAMES=("GrupoN" "so7508" "original" "catedra" "propios" "testeos");
-
 DIRECTORIES_INFO=("Directorio de ejecutables" "Directorio de tablas maestras" "Directorio de novedades" "Directorio de rechazados" "Directorio de lotes procesados" "Directorio de transacciones");
-
-#Aca pongo en orden, separados por espacio, los directorios
-#Caso default: "/bin /master /input /rechazos /lotes /output"
 #NOTA: pide que recuerde los valores nuevos en el caso de cancelar la instalacion
 installation_directories=("bin" "master" "input" "rechazos" "lotes" "output");
-
+IDENTIFIERS=("GRUPO" "DIRINST" "DIRBIN" "DIRMAE" "DIRIN" "DIRRECH" "DIRPROC" "DIROUT");
 #Siempre parent_path va a ser so7508, que es donde esta este Script
-parenth_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P );
-echo "$parenth_path";
+PARENTH_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P );
+echo "Parent_path: $PARENTH_PATH";
 
+CONFIG_PATH="so7508/instalarTP.conf";
+SEPARATOR="-"
+
+
+function isInstallationRight(){
+	if [[ -d "$GRUPO" ]]; then
+		#Verifico que los 6 directorios de instalacion existan
+		#TODO/PROBLEMA: usa siempre los default, deberia leer los 8 registros del instalarTP.conf
+		#de ahi saco los path/nombre de cada directorio
+		i=0;
+		files_ok=1;
+		while [[ $files_ok -eq $OK && (i -lt ${#installation_directories[@]}) ]]; do
+			files_ok=0;
+			if [[ -e "${GRUPO}/${installation_directories[i]}" ]]; then
+				files_ok=1;	
+			fi
+			((i++));
+		done
+	else
+		echo "EXCEPTION, no existe $GRUPO" 2> "${PARENTH_PATH}/errors.log";
+	fi
+	isInstalled_return=$files_ok;	
+}
+
+function isInstalled(){
+	#Existe?
+	if [ -e "$CONFIG_PATH" ]
+	then 
+		echo "$CONFIG_PATH existe"
+		isInstallationRight;
+	else 
+		echo "$CONFIG_PATH no existe"
+	fi
+}
 
 function inputDirectoryName(){
 	if [[ $# -ne 3 ]]; then
@@ -33,20 +65,13 @@ function inputDirectoryName(){
 	non_permitted_names=(${RESERVED_NAMES[@]} ${installation_directories[@]});			
 	while [[ "${valid_input}" -eq 0 ]]; do
 		echo "$2 $default_dir_name"
-		read -r input_dir_name;
-			
-		#Primero valido el input
-		SLASH='/';
-		first_char=${input_dir_name:0:1}
+		read -r input_dir_name;	
 		if [[ "$input_dir_name" == "" ]]; then
 			echo "DEBUG: usando opcion default"
 			input_dir_name=$1
 			valid_input=1;
 		elif [[ ${#input_dir_name} -lt 1 ]]; then
 			echo "Debe tener mas de un caracter"
-		#elif [[ ! ("$first_char" == $SLASH) ]]; then
-		#	echo "Debe colocar $SLASH al principio"
-		#Si decidio no usar el default, chequeo que no sea reservado
 		else
 			valid_input=1;
 			for i in "${!non_permitted_names[@]}"; do
@@ -66,29 +91,30 @@ function inputDirectoryName(){
 }
 
 function finishInstallation(){
-	echo "<<<<<<< Finishing installation >>>>>>>>>>";
 	#En este momento estoy en $GRUPO
-	#for i in ${installation_directories[@]}; do
-	#	mkdir "${installation_directories[i]}"
-	#done
+	for i in ${!installation_directories[@]}; do
+		mkdir "${installation_directories[i]}"
+	done
 
 	#Subdirectorio /ok
-	#PATH_NOVEDADES_ACEPTADAS="${installation_directories[2]}/ok"
-	#mkdir PATH_NOVEDADES_ACEPTADAS; 
+	PATH_NOVEDADES_ACEPTADAS="${installation_directories[2]}/ok"
+	mkdir "$PATH_NOVEDADES_ACEPTADAS"; 
 
-	#PATH_COMISIONES="${installation_directories[6]}/comisiones"
-	#mkdir PATH_NOVEDADES_ACEPTADAS; 
+	#subdirectorio /comisiones
+	PATH_COMISIONES="${installation_directories[5]}/comisiones"
+	mkdir "$PATH_COMISIONES";
+
+	echo $OK;
 }
 
 function handleUserConfirmation(){
-	echo "¿Confirma la instalacion? (SI-NO)";
-	read -r ANSWER;
+	read -r -p "¿Confirma la instalacion? (SI-NO)" ANSWER;
 	case "${ANSWER}" in
 		[sS] | [sS][iI])
 			finishInstallation
 		;;
 		[nN] | [nN][oO])
-			echo "${REPAIR}"
+			echo 0
 		;;
 	*)
 		echo "Favor de ingresar s/si o n/no"
@@ -97,7 +123,6 @@ function handleUserConfirmation(){
 }
 
 function installationConfirmation(){
-	
 	echo "TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo N";
 	echo -e "Tipo de proceso:\tINSTALACION"
 	echo -e "Directorio Padre:\t$GRUPO"
@@ -109,7 +134,7 @@ function installationConfirmation(){
 	for i in ${!DIRECTORIES_INFO[@]}; do		
 		echo -e "${DIRECTORIES_INFO[i]}:\t${installation_directories[i]}";
 	done
-	handleUserConfirmation
+	
 }
 
 #Camino de instalacion
@@ -119,7 +144,6 @@ function installation(){
 	for (( j = 0; j < 6; j++ )); do
 		inputDirectoryName "${installation_directories[j]}" "${DIRECTORIES_INFO[j]}" $j; #Al pasar i se que elemento sobrescribir
 	done
-	installationConfirmation
 }
 
 
@@ -139,32 +163,77 @@ function handleUserInput(){
 	esac
 }
 
-#el chiste de esto es que si yo lo invoco desed $HOME,
-# no puedo hacer un cat de los archivos de ese directorio por que mi WD esta en $HOME
-# y no donde se ejecuta el script
+######Funciones para .conf#########
 
+function addRegister(){
+	#Esta funcion registro modular, deberia servir para cualquier caso
+	register="";
+	fields=("$@");
+	
+	for i in ${!fields[@]}; do
+		register+="${fields[i]}$SEPARATOR"
+	done
+
+	#Quito el ultimo char
+	end=$((${#register}-1));
+	echo "${register:0:${end}}" >> "$CONFIG_PATH";	
+}
+
+
+function createConfigFile(){
+	#Crea nuevo, > es un overwrite
+	> "$CONFIG_PATH";
+	addRegister "${IDENTIFIERS[0]}" "${GRUPO}";
+	addRegister "${IDENTIFIERS[1]}" "${GRUPO}/so7508";	
+	for i in "${!installation_directories[@]}";do
+		identifier_index=$((i + 2));
+		addRegister "${IDENTIFIERS[identifier_index]}" "${GRUPO}/${installation_directories[i]}";
+	done
+	appendAdditionalInfo "INSTALACION"
+}
+
+function appendAdditionalInfo(){
+	#TODO: comando date, saber el nombre del user
+	DATE=$(date "+%D %T");
+	addRegister "$1" "$DATE" "$USER";
+}
+
+##############main#####################
 #Estoy en so7508
-cd "${parenth_path}";
+cd "${PARENTH_PATH}";
 
 #Subo a $GRUPO
 cd "../"
-
 GRUPO=$(pwd);
 
 #Aca empiezo a instalar los Directorio ejecutable, tablas etc.
-echo "<<<<<<<<<< Ejecutando instalarTP.sh >>>>>>>>>"
-echo "Que desea hacer?"
+echo "<<<<<<<<<< Ejecutando instalarTP.sh >>>>>>>>>";
 
+isInstalled_return=0;
+isInstalled;
+if [[ $isInstalled_return -eq $OK ]]; then
+	echo "Sistema se encuentra instalado correctamente, saliendo"
+	#TODO: debe mostrar los datos del archivo de configuracion
+	exit 0;
+fi
+
+echo "Que desea hacer?"
 response="$(handleUserInput)";
 
 #SC2091 $(..) is for capturing and not for executing.
-#SC2092: Remove backticks to avoid executing output (or use eval if intentional).
-if [[ $(expr index "${response}" "${INSTALL}") -eq 1 ]]; then
-	installation;
-elif [[ $(expr index "${response}" "${REPAIR}") -ne 1 ]]; then
-	echo "repair"
+if [[ "${response}" == "${INSTALL}" ]]; then
+	installation_ok=0;
+	while [[ installation_ok -eq 0 ]]; do
+		installation;
+		installationConfirmation;
+		installation_ok=$(handleUserConfirmation);
+	done
+	#Creo archivo de configuracion
+	createConfigFile
+elif [[ "${response}" == "${REPAIR}" ]]; then
+	echo "mock: repair"
 else
-	echo "Exception, nunca deberia llegar aca"
+	echo "Exception, nunca deberia llegar aca; response= $response" 2> "${PARENTH_PATH}/errors.log"
 	exit 1;
 fi
 
