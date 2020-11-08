@@ -17,14 +17,16 @@ fi
 
 ################################################################
 
-
-
-### verificar si el proceso ya esrta corriendo #################
-# echo "verificando si el proceso ya esta corriendo....."
-# falta el chequeo
-
+### verificar si el proceso ya esta corriendo #################
+echo "verificando si el proceso ya esta corriendo....."
+result=`ps -e | grep "procesoPral.sh"`
+if [ $? -eq 0 ]; then
+	echo "el proceso ya esta en ejcucion..."
+    exit
+fi
 ################################################################
 # lanzamos el proceso principal
-# si usamos top vemos que el proceso yes se empezo a ejecutar en background
-./procesoPral.sh
+# si usamos top vemos que el proceso se empezo a ejecutar en background
+
+./procesoPral.sh > /dev/null &
 

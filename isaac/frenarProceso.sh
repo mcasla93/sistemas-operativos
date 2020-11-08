@@ -10,7 +10,7 @@
 
 echo "Verificamos que el proceso este corriendo!!!!!"
 # tomo el numero de proceso
-ProcessID=$(pgrep "yes")
+ProcessID=$(pgrep "procesoPral.sh")
 echo numero de proceso $ProcessID
 
 kill $ProcessID

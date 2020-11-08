@@ -2,5 +2,11 @@
 
 #este es un proceso zombie (commando yes) para probar ponerlo en background
 
-yes > /dev/null &
+while :
+do
+	echo "Presiona [CTRL+C] para parar..."
+	#sleep 1
+done
+
+# yes > /dev/null &
 
