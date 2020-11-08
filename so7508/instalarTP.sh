@@ -1,56 +1,103 @@
 #! /bin/bash
 
-#CON ARRAYS
+#Format
+TITLE="##################";
+RED='\033[0;31m'
+ORANGE='\033[0;33m'
+NC='\033[0m'
+GREEN='\033[0;32m'
+DEBUG='\033[1;36m'
+YELLOW='\033[1;33m'
 
-INSTALL="install"
-REPAIR="repair"
-
+#Booleans
 OK=1;
+INSTALL="install"
+QUIT="quit"
 
-#Nombres reservado
+
+#Nombres reservados
 RESERVED_NAMES=("GrupoN" "so7508" "original" "catedra" "propios" "testeos");
 DIRECTORIES_INFO=("Directorio de ejecutables" "Directorio de tablas maestras" "Directorio de novedades" "Directorio de rechazados" "Directorio de lotes procesados" "Directorio de transacciones");
+
 #NOTA: pide que recuerde los valores nuevos en el caso de cancelar la instalacion
 installation_directories=("bin" "master" "input" "rechazos" "lotes" "output");
 IDENTIFIERS=("GRUPO" "DIRINST" "DIRBIN" "DIRMAE" "DIRIN" "DIRRECH" "DIRPROC" "DIROUT");
+
 #Siempre parent_path va a ser so7508, que es donde esta este Script
-PARENTH_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P );
-echo "Parent_path: $PARENTH_PATH";
+PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P );
 
 CONFIG_PATH="so7508/instalarTP.conf";
 SEPARATOR="-"
 
 
-function isInstallationRight(){
-	if [[ -d "$GRUPO" ]]; then
-		#Verifico que los 6 directorios de instalacion existan
-		#TODO/PROBLEMA: usa siempre los default, deberia leer los 8 registros del instalarTP.conf
-		#de ahi saco los path/nombre de cada directorio
-		i=0;
-		files_ok=1;
-		while [[ $files_ok -eq $OK && (i -lt ${#installation_directories[@]}) ]]; do
-			files_ok=0;
-			if [[ -e "${GRUPO}/${installation_directories[i]}" ]]; then
-				files_ok=1;	
-			fi
-			((i++));
-		done
+###Verificar Instalacion
+
+function readIdentificationRegister(){
+	#TODO: faltan verificar los subdirectorios
+	g_files_ok=1;
+	identifier=$(echo "$1" | sed 's;\(.*\)-\(.*\);\1;');
+	value=$(echo "$1" | sed 's;\(.*\)-\(.*\);\2;');
+	
+	#Verifica que el valor leido exista, sea un directorio, 
+	#que el identificador coincida en orden
+	if [[ -e "$value" && (-d "$value") && ("${IDENTIFIERS[$2]}" == "$identifier") ]]; then
+		echo -e "${GREEN}OK: ${identifier}\n${NC}";
 	else
-		echo "EXCEPTION, no existe $GRUPO" 2> "${PARENTH_PATH}/errors.log";
+		echo -e "${RED}ERROR:\tEl directorio $identifier no se encuentra${NC}"
+		echo -e "\t${ORANGE}Path: $value${NC}\n"
+		g_files_ok=0;
+	
 	fi
-	isInstalled_return=$files_ok;	
+}
+
+function verifyConfigFiles(){
+	#Verifica files de so7508 (no se si importa que esten, podria ser un warning)
+	#.conf debe existir porque es lo primero que se verifica
+	echo -e "${GREEN}${TITLE}VERIFICANDO ARCHIVOS EN so7508${TITLE}${NC}"
+	so7508_path="${GRUPO}/so7508/";
+	files=("instalarTP.sh" "instalarTP.log" "instalarTP.conf" "iniciarambiente.log" "pprincipal.log");
+	for i in ${!files[@]}; do
+		if [[ -e "${so7508_path}${files[i]}" ]]; then
+			echo -e "${GREEN}OK: ${files[i]}${NC}"
+		else
+			echo -e "${YELLOW}WARNING: ${files[i]} no existe${NC}";
+			echo -e "\t${YELLOW} - Path:${NC}${so7508_path}${files[i]}"
+		fi
+	done
+}
+
+function readConfigFile(){
+	index=0;
+	echo -e "\n${GREEN}${TITLE} VERIFICANDO ARCHIVO DE CONFIGURACION $TITLE${NC}\n"
+	while read -r LINE; do
+		#Lee solo los primeros 8 registros
+		if [[ index -lt ${#IDENTIFIERS[@]} ]]; then
+			readIdentificationRegister "$LINE" $index;
+			((index++));
+		else
+			echo -e "${LINE}\n";
+		fi
+	done < "$CONFIG_PATH"
+	if [[ g_files_ok -ne $OK ]]; then
+		echo -e "${RED}ERROR:\tHay uno o varios directorios faltantes${NC}"
+	fi
+	verifyConfigFiles
+		
 }
 
 function isInstalled(){
-	#Existe?
+	#Existe el instalarTP.conf?
 	if [ -e "$CONFIG_PATH" ]
 	then 
-		echo "$CONFIG_PATH existe"
-		isInstallationRight;
+		echo -e "${GREEN}$CONFIG_PATH existe${NC}"
+		isInstalled_return=$OK;
 	else 
-		echo "$CONFIG_PATH no existe"
+		echo -e "${YELLOW}$CONFIG_PATH no existe${NC}"
 	fi
 }
+
+
+###Instalacion
 
 function inputDirectoryName(){
 	if [[ $# -ne 3 ]]; then
@@ -64,10 +111,9 @@ function inputDirectoryName(){
 	
 	non_permitted_names=(${RESERVED_NAMES[@]} ${installation_directories[@]});			
 	while [[ "${valid_input}" -eq 0 ]]; do
-		echo "$2 $default_dir_name"
+		echo "$2: ${GREEN}$default_dir_name${NC}"
 		read -r input_dir_name;	
 		if [[ "$input_dir_name" == "" ]]; then
-			echo "DEBUG: usando opcion default"
 			input_dir_name=$1
 			valid_input=1;
 		elif [[ ${#input_dir_name} -lt 1 ]]; then
@@ -84,7 +130,7 @@ function inputDirectoryName(){
 		fi
 	done
 
-	echo "Directorio Valido :), DEBUG: guardando en indice $3"
+	echo -e "${DEBUG}Directorio Valido :) guardando en indice $3${NC}"
 
 	#Lo agrego a la lista de usados
 	installation_directories[$3]="${input_dir_name}";
@@ -139,7 +185,8 @@ function installationConfirmation(){
 
 #Camino de instalacion
 function installation(){
-	echo "<<<<<<<<<<<< Proceso de instalacion >>>>>>>>>>>>"
+	echo -e "${GREEN}${TITLE} Proceso de instalacion ${TITLE}${NC}"
+	echo "Escriba el nombre del directorio, para aceptar el por defecto presione ENTER"
 	#El argumento default debe actualizarse en el caso de que el user cancele la isntalacion con el ultimo valor que puso
 	for (( j = 0; j < 6; j++ )); do
 		inputDirectoryName "${installation_directories[j]}" "${DIRECTORIES_INFO[j]}" $j; #Al pasar i se que elemento sobrescribir
@@ -149,16 +196,16 @@ function installation(){
 
 #Como todos son archivos, el echo funciona como un return si lo redirigo de la stdin
 function handleUserInput(){
-	read -r -p "Instalacion o Reparacion? I/R" ANSWER
+	read -r -p "Instalar o Salir? I/S" ANSWER
 	case "${ANSWER}" in
-		[iI] | [iI][nN][sS][tT][tT][aA][lL])
-			echo "${INSTALL}"
+		[iI] | [iI][nN][sS][tT][aA][lL][lL])
+			echo "${INSTALL}";
 		;;
-		[rR] | [rR][eE][pP][aA][iI][rR])
-			echo "${REPAIR}"
+		[sS] | [sS][aA][lL][iI][rR])
+			exit 0;
 		;;
 	*)
-		echo "Favor de ingresar I/Install or R/Repair"
+		echo "Favor de ingresar I/Install or S/Salir"
 		;;
 	esac
 }
@@ -200,27 +247,35 @@ function appendAdditionalInfo(){
 
 ##############main#####################
 #Estoy en so7508
-cd "${PARENTH_PATH}";
+cd "${PARENT_PATH}";
 
 #Subo a $GRUPO
 cd "../"
 GRUPO=$(pwd);
 
 #Aca empiezo a instalar los Directorio ejecutable, tablas etc.
-echo "<<<<<<<<<< Ejecutando instalarTP.sh >>>>>>>>>";
+echo -e "${GREEN}${TITLE} Bienvenido al instalador ${TITLE}${NC}";
 
 isInstalled_return=0;
 isInstalled;
+#Si esta instalado verificado que este correcto
 if [[ $isInstalled_return -eq $OK ]]; then
-	echo "Sistema se encuentra instalado correctamente, saliendo"
-	#TODO: debe mostrar los datos del archivo de configuracion
-	exit 0;
+	g_files_ok=0;	
+	readConfigFile;
+	if [[ g_files_ok -eq $OK ]]; then
+		echo -e "${GREEN}Sistema se encuentra instalado correctamente, saliendo${NC}"
+		exit 0;
+	else
+		echo -e "${DEBUG}TODO: Verificar si se puede reparar${NC}"
+	fi
 fi
 
 echo "Que desea hacer?"
 response="$(handleUserInput)";
 
 #SC2091 $(..) is for capturing and not for executing.
+#TODO: Eliminar opcion de reparacion, solo aparece cuando
+#ya esta instalado pero con errores.
 if [[ "${response}" == "${INSTALL}" ]]; then
 	installation_ok=0;
 	while [[ installation_ok -eq 0 ]]; do
@@ -230,10 +285,8 @@ if [[ "${response}" == "${INSTALL}" ]]; then
 	done
 	#Creo archivo de configuracion
 	createConfigFile
-elif [[ "${response}" == "${REPAIR}" ]]; then
-	echo "mock: repair"
 else
-	echo "Exception, nunca deberia llegar aca; response= $response" 2> "${PARENTH_PATH}/errors.log"
+	echo "Saliendo"
 	exit 1;
 fi
 
