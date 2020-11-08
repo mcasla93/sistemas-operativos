@@ -18,6 +18,7 @@ QUIT="quit"
 #Nombres reservados
 RESERVED_NAMES=("GrupoN" "so7508" "original" "catedra" "propios" "testeos");
 DIRECTORIES_INFO=("Directorio de ejecutables" "Directorio de tablas maestras" "Directorio de novedades" "Directorio de rechazados" "Directorio de lotes procesados" "Directorio de transacciones");
+TYPES=("INF" "WAR" "ERR");
 
 #NOTA: pide que recuerde los valores nuevos en el caso de cancelar la instalacion
 installation_directories=("bin" "master" "input" "rechazos" "lotes" "output");
@@ -26,60 +27,87 @@ IDENTIFIERS=("GRUPO" "DIRINST" "DIRBIN" "DIRMAE" "DIRIN" "DIRRECH" "DIRPROC" "DI
 #Siempre parent_path va a ser so7508, que es donde esta este Script
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P );
 
-CONFIG_PATH="so7508/instalarTP.conf";
+CONFIG_PATH="${PARENT_PATH}/instalarTP.conf";
+LOG_PATH="${PARENT_PATH}/instalarTP.log";
 SEPARATOR="-"
 
 
-###Verificar Instalacion
+function addRegister(){
+	#Esta funcion registro modular, deberia servir para cualquier caso
+	register="";
+	fields=("$@");
+	
+	for i in ${!fields[@]}; do
+		if [[ i -gt 0 ]]; then
+			register+="${fields[i]}$SEPARATOR"
+		fi
+	done
 
+	#Quito el ultimo char
+	end=$((${#register}-1));
+	echo "${register:0:${end}}" >> "${fields[0]}";	
+}
+
+function log(){
+	DATE=$(date "+%D %T");
+	type=$1;
+	message=$2;
+	source=$3;
+	#Mensaje a stdout
+	#Redirigo a stderr para que no me lo capturen 
+	echo -e "$message" >&2;
+	#Mensaje a log
+	addRegister "$LOG_PATH" "$DATE" "$type" "$message" "$source" "$USER" 
+}
+
+
+###Verificar Instalacion
 function readIdentificationRegister(){
 	#TODO: faltan verificar los subdirectorios
-	g_files_ok=1;
 	identifier=$(echo "$1" | sed 's;\(.*\)-\(.*\);\1;');
 	value=$(echo "$1" | sed 's;\(.*\)-\(.*\);\2;');
 	
 	#Verifica que el valor leido exista, sea un directorio, 
 	#que el identificador coincida en orden
 	if [[ -e "$value" && (-d "$value") && ("${IDENTIFIERS[$2]}" == "$identifier") ]]; then
-		echo -e "${GREEN}OK: ${identifier}\n${NC}";
+		log "${TYPES[0]}" "${GREEN}OK: ${identifier}${NC}" "$0";
+		log "${TYPES[0]}" " - Path: ${value}\n" "$0";
 	else
-		echo -e "${RED}ERROR:\tEl directorio $identifier no se encuentra${NC}"
-		echo -e "\t${ORANGE}Path: $value${NC}\n"
+		log "${TYPES[2]}" "${RED}ERROR:\tEl directorio $identifier no se encuentra${NC}" "$0";
+		log "${TYPES[2]}" "${ORANGE} - Path: $value${NC}\n" "$0";
 		g_files_ok=0;
-	
 	fi
 }
 
 function verifyConfigFiles(){
 	#Verifica files de so7508 (no se si importa que esten, podria ser un warning)
 	#.conf debe existir porque es lo primero que se verifica
-	echo -e "${GREEN}${TITLE}VERIFICANDO ARCHIVOS EN so7508${TITLE}${NC}"
+	echo -e "${GREEN}${TITLE} VERIFICANDO ARCHIVOS EN so7508 ${TITLE}${NC}"
 	so7508_path="${GRUPO}/so7508/";
 	files=("instalarTP.sh" "instalarTP.log" "instalarTP.conf" "iniciarambiente.log" "pprincipal.log");
 	for i in ${!files[@]}; do
 		if [[ -e "${so7508_path}${files[i]}" ]]; then
-			echo -e "${GREEN}OK: ${files[i]}${NC}"
+			log "${TYPES[0]}" "${GREEN}OK: ${files[i]}${NC}" "$0"
 		else
-			echo -e "${YELLOW}WARNING: ${files[i]} no existe${NC}";
-			echo -e "\t${YELLOW} - Path:${NC}${so7508_path}${files[i]}"
+			log "${TYPES[1]}" "${YELLOW}WARNING: ${files[i]} no existe${NC}\n - Path:${so7508_path}${files[i]}" "$0";
 		fi
 	done
 }
 
 function readConfigFile(){
 	index=0;
-	echo -e "\n${GREEN}${TITLE} VERIFICANDO ARCHIVO DE CONFIGURACION $TITLE${NC}\n"
+	log "${TYPES[0]}" "\n${GREEN}${TITLE} VERIFICANDO ARCHIVO DE CONFIGURACION $TITLE${NC}\n" "$0";
 	while read -r LINE; do
 		#Lee solo los primeros 8 registros
 		if [[ index -lt ${#IDENTIFIERS[@]} ]]; then
 			readIdentificationRegister "$LINE" $index;
 			((index++));
 		else
-			echo -e "${LINE}\n";
+			log "${TYPES[0]}" "${LINE}\n" "$0";
 		fi
 	done < "$CONFIG_PATH"
 	if [[ g_files_ok -ne $OK ]]; then
-		echo -e "${RED}ERROR:\tHay uno o varios directorios faltantes${NC}"
+		log "${TYPES[2]}" "${RED}RESULTADO VERIFICACION:\tHay uno o varios directorios faltantes${NC}" "$0";
 	fi
 	verifyConfigFiles
 		
@@ -89,10 +117,10 @@ function isInstalled(){
 	#Existe el instalarTP.conf?
 	if [ -e "$CONFIG_PATH" ]
 	then 
-		echo -e "${GREEN}$CONFIG_PATH existe${NC}"
+		log "${TYPES[0]}" "${GREEN}$CONFIG_PATH existe${NC}" "$0";
 		isInstalled_return=$OK;
 	else 
-		echo -e "${YELLOW}$CONFIG_PATH no existe${NC}"
+		log "${TYPES[1]}" "${YELLOW}$CONFIG_PATH no existe${NC}" "$0";
 	fi
 }
 
@@ -111,19 +139,21 @@ function inputDirectoryName(){
 	
 	non_permitted_names=(${RESERVED_NAMES[@]} ${installation_directories[@]});			
 	while [[ "${valid_input}" -eq 0 ]]; do
-		echo "$2: ${GREEN}$default_dir_name${NC}"
-		read -r input_dir_name;	
+		log "${TYPES[0]}" "$2: ${GREEN}$default_dir_name${NC}" "$0";
+		read -r input_dir_name;
+		log "${TYPES[0]}" "${input_dir_name}" "$0"
 		if [[ "$input_dir_name" == "" ]]; then
 			input_dir_name=$1
 			valid_input=1;
 		elif [[ ${#input_dir_name} -lt 1 ]]; then
-			echo "Debe tener mas de un caracter"
+			log "${TYPES[0]}" "Debe tener mas de un caracter" "$0";
 		else
 			valid_input=1;
 			for i in "${!non_permitted_names[@]}"; do
 					if [ "${non_permitted_names[i]}" == "$input_dir_name" ]; then
-						echo "No puede utilizar un nombre reservado"
-						echo "Nombres reservados: ${non_permitted_names[@]}"
+						log "${TYPES[0]}" "${YELLOW}No puede utilizar un nombre reservado${NC}" "$0";
+						#La lista de nombres se toman como parametros, rompiendo con el diseño
+						echo -e "Nombres reservados: ${non_permitted_names[@]}";
 						valid_input=0;
 					fi
 			done
@@ -150,11 +180,13 @@ function finishInstallation(){
 	PATH_COMISIONES="${installation_directories[5]}/comisiones"
 	mkdir "$PATH_COMISIONES";
 
+	#return
 	echo $OK;
 }
 
 function handleUserConfirmation(){
-	read -r -p "¿Confirma la instalacion? (SI-NO)" ANSWER;
+	log "${TYPES[0]}" "¿Confirma la instalacion? (SI-NO)";
+	read -r ANSWER;
 	case "${ANSWER}" in
 		[sS] | [sS][iI])
 			finishInstallation
@@ -169,24 +201,24 @@ function handleUserConfirmation(){
 }
 
 function installationConfirmation(){
-	echo "TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo N";
-	echo -e "Tipo de proceso:\tINSTALACION"
-	echo -e "Directorio Padre:\t$GRUPO"
-	echo -e "Ubicación script de instalación:\t$GRUPO/so7508/instalarTP.sh";
-	echo -e "Log de la instalacion:	$GRUPO/so7508/instalarTP.log";
-	echo -e "Archivo de configuracion:\t$GRUPO/so7508/instalarTP.conf";
-	echo -e "Log de la inicializacion:\t$GRUPO/so7508/inicarmbiente.log";
-	echo -e "Log del proceso principal:\t$GRUPO/so7508/pprincipal.log";
+	echo "TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo N" "$0"; 
+	log "${TYPES[0]}" "Tipo de proceso:\tINSTALACION" "$0";
+	log "${TYPES[0]}" "Directorio Padre:\t$GRUPO" "$0";
+	log "${TYPES[0]}" "Ubicación script de instalación:\t$GRUPO/so7508/instalarTP.sh" "$0";
+	log "${TYPES[0]}" "Log de la instalacion:	$GRUPO/so7508/instalarTP.log" "$0";
+	log "${TYPES[0]}" "Archivo de configuracion:\t$GRUPO/so7508/instalarTP.conf" "$0";
+	log "${TYPES[0]}" "Log de la inicializacion:\t$GRUPO/so7508/inicarmbiente.log" "$0";
+	log "${TYPES[0]}" "Log del proceso principal:\t$GRUPO/so7508/pprincipal.log" "$0";
 	for i in ${!DIRECTORIES_INFO[@]}; do		
-		echo -e "${DIRECTORIES_INFO[i]}:\t${installation_directories[i]}";
+		log "${TYPES[0]}" "${DIRECTORIES_INFO[i]}:\t${installation_directories[i]}" "$0";
 	done
 	
 }
 
 #Camino de instalacion
 function installation(){
-	echo -e "${GREEN}${TITLE} Proceso de instalacion ${TITLE}${NC}"
-	echo "Escriba el nombre del directorio, para aceptar el por defecto presione ENTER"
+	log "${TYPES[0]}" "${GREEN}${TITLE} Proceso de instalacion ${TITLE}${NC}" "$0";
+	log "${TYPES[0]}" "Escriba el nombre del directorio, para aceptar el por defecto presione ENTER" "$0";
 	#El argumento default debe actualizarse en el caso de que el user cancele la isntalacion con el ultimo valor que puso
 	for (( j = 0; j < 6; j++ )); do
 		inputDirectoryName "${installation_directories[j]}" "${DIRECTORIES_INFO[j]}" $j; #Al pasar i se que elemento sobrescribir
@@ -196,7 +228,8 @@ function installation(){
 
 #Como todos son archivos, el echo funciona como un return si lo redirigo de la stdin
 function handleUserInput(){
-	read -r -p "Instalar o Salir? I/S" ANSWER
+	log "${TYPES[0]}" "Instalar o Salir? I/S" "$0";
+	read -r ANSWER;
 	case "${ANSWER}" in
 		[iI] | [iI][nN][sS][tT][aA][lL][lL])
 			echo "${INSTALL}";
@@ -212,37 +245,21 @@ function handleUserInput(){
 
 ######Funciones para .conf#########
 
-function addRegister(){
-	#Esta funcion registro modular, deberia servir para cualquier caso
-	register="";
-	fields=("$@");
-	
-	for i in ${!fields[@]}; do
-		register+="${fields[i]}$SEPARATOR"
-	done
-
-	#Quito el ultimo char
-	end=$((${#register}-1));
-	echo "${register:0:${end}}" >> "$CONFIG_PATH";	
-}
-
-
 function createConfigFile(){
 	#Crea nuevo, > es un overwrite
 	> "$CONFIG_PATH";
-	addRegister "${IDENTIFIERS[0]}" "${GRUPO}";
-	addRegister "${IDENTIFIERS[1]}" "${GRUPO}/so7508";	
+	addRegister "$CONFIG_PATH" "${IDENTIFIERS[0]}" "${GRUPO}";
+	addRegister "$CONFIG_PATH" "${IDENTIFIERS[1]}" "${GRUPO}/so7508";	
 	for i in "${!installation_directories[@]}";do
 		identifier_index=$((i + 2));
-		addRegister "${IDENTIFIERS[identifier_index]}" "${GRUPO}/${installation_directories[i]}";
+		addRegister "$CONFIG_PATH" "${IDENTIFIERS[identifier_index]}" "${GRUPO}/${installation_directories[i]}";
 	done
 	appendAdditionalInfo "INSTALACION"
 }
 
 function appendAdditionalInfo(){
-	#TODO: comando date, saber el nombre del user
 	DATE=$(date "+%D %T");
-	addRegister "$1" "$DATE" "$USER";
+	addRegister "$CONFIG_PATH" "$1" "$DATE" "$USER";
 }
 
 ##############main#####################
@@ -254,23 +271,23 @@ cd "../"
 GRUPO=$(pwd);
 
 #Aca empiezo a instalar los Directorio ejecutable, tablas etc.
-echo -e "${GREEN}${TITLE} Bienvenido al instalador ${TITLE}${NC}";
+log "${TYPES[0]}" "${GREEN}${TITLE} Bienvenido al instalador ${TITLE}${NC}" "$0";
 
 isInstalled_return=0;
 isInstalled;
 #Si esta instalado verificado que este correcto
 if [[ $isInstalled_return -eq $OK ]]; then
-	g_files_ok=0;	
+	g_files_ok=$OK;	
 	readConfigFile;
 	if [[ g_files_ok -eq $OK ]]; then
-		echo -e "${GREEN}Sistema se encuentra instalado correctamente, saliendo${NC}"
+		log "${TYPES[0]}" "${GREEN}Sistema se encuentra instalado correctamente, saliendo${NC}" "$0";
 		exit 0;
 	else
 		echo -e "${DEBUG}TODO: Verificar si se puede reparar${NC}"
 	fi
 fi
 
-echo "Que desea hacer?"
+#echo "Que desea hacer?"
 response="$(handleUserInput)";
 
 #SC2091 $(..) is for capturing and not for executing.
@@ -286,7 +303,7 @@ if [[ "${response}" == "${INSTALL}" ]]; then
 	#Creo archivo de configuracion
 	createConfigFile
 else
-	echo "Saliendo"
+	log "${TYPES[0]}" "Saliendo del instalador" "$0";
 	exit 1;
 fi
 
