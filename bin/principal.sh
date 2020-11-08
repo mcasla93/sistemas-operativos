@@ -106,6 +106,18 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
     fi
 
     #Validar que es un archivo regular, de texto, legible
+    if [ ! -f "$DIRINPUT/$novedades" ]; then
+        echo "El archivo $novedades , NO ES UN ARCHIVO REGULAR"
+        #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+        continue
+    fi
+
+    if [ ! -r "$DIRINPUT/$novedades" ]; then
+        echo "El archivo $novedades , NO SE PUEDE LEER"
+        #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+        continue
+    fi
+
     if [ ! "$(file $DIRINPUT/$novedades)" = "$DIRINPUT/$novedades: ASCII text" ]; then
         echo "El archivo $novedades es ilegible, NO ES ACEPTABLE"
         #mv "$DIRINPUT/$novedades" $DIRRECHAZO
@@ -237,18 +249,18 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             fi
 
             # Si el PROCESSING_CODE de algún registro TFD no indica un valor permitido (000000 o 111111), se rechaza todo el archivo
-            # se deberia poder validar cuando se valida el record type. Meter regex (000000|111111)
-            # no logro validar con regex el OR 000000|111111
-            #processingCodeTransaccion=`echo $registroNovedad | cut -d ';' -f12 | grep "^(000000|111111){1}$"`
-            #processingCodeTransaccion=`echo $registroNovedad | cut -d ';' -f12 | sed '/^(000000|111111)$/p'`
-            #echo $processingCodeTransaccion
+            processingCode=`echo $registroNovedad | cut -d ';' -f12`
+            debito="000000"
+            credito="111111"
+            if [ "$processingCode" != "$debito" -a "$processingCode" != "$credito" ]; then
+                echo "El ProcessingCode $processingCode, no indica un valor permitido"
+                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                #continue
+            fi
         fi
-        
  	done < "$DIRINPUT/$novedades"
-
     esCabecera=1
     lineaLeida=0
-
 done
 
 ############################
@@ -262,6 +274,22 @@ done
 # ****Diseño del registro de tarjetas homologadas
 # Tabla de Tarjetas Homologadas: $DIRMAE/tarjetashomologadas.txt
 # Separador de campos: , (coma)
+
+##EMPIEZO AQUI CICLO COMPENSACION
+##CHEQUEAR QUE EL NUEVO CICLO SEA CORRECTO ??? como es el match ???
+
+#for novedades in `ls -p $DIRINPUT | grep -v /`; do
+ #   while read linea; do
+  #      idTransaction=`echo $linea | cut -d ';' -f3`
+   #     transactionMount=`echo $linea | cut -d ';' -f11`
+    #   echo "$match"
+    #    if [ $match -eq 1 ]; then
+    #        echo "La Transaccion $idTransaction no fue compensada, se puede grabar en liquidaciones"
+    #    fi
+  #  done < "$DIRINPUT/$novedades"   
+#done
+
+
 
 ############################
 ####        Salida 1 – Grabar el archivo de liquidaciones
