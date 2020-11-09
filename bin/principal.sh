@@ -21,6 +21,7 @@ DIRRECHAZO="../rechazos"
 # Directorio de lotes procesados: $GRUPO/lotes
 DIRLOTES="../lotes"
 # Directorio de transacciones: $GRUPO/output
+DIROUT="../output"
 # **Directorio de comisiones: $GRUPO/output/comisiones
 
 #VERIFICO QUE ESTE INICIALIZADO
@@ -36,6 +37,12 @@ DIRLOTES="../lotes"
 #TIEMPODORMIDO=unminuto
 ARCHIVOCOMERCIOS="$DIRMAESTRO/comercios.txt"
 ARCHIVOTJTHOMOLOGADAS="$DIRMAESTRO/tarjetashomologadas.txt"
+DEBITO="000000"
+CREDITO="111111"
+#                                       DOCUMENTAR CARPETA TMP
+DIRLIQUIDACIONTEMPORAL="$DIRINPUT/tmp/liquidaciones/"
+DIRCOMISIONES="$DIROUT/comisiones/"
+DIRCOMISIONESTEMPORAL="$DIRINPUT/tmp/comisiones/"
 #Definir constantes (mensajes, log..)
 
 #Contar ciclos
@@ -97,30 +104,38 @@ ARCHIVOTJTHOMOLOGADAS="$DIRMAESTRO/tarjetashomologadas.txt"
 
 #cumple mando a $DIRINPUTOK, sino a $DIRRECHAZO
 
+borrarTmp() {
+    #limpio carpeta TMP de liquidaciones. Borro y creo
+    rm -r $DIRLIQUIDACIONTEMPORAL
+    mkdir $DIRLIQUIDACIONTEMPORAL
+    rm -r $DIRCOMISIONESTEMPORAL
+    mkdir $DIRCOMISIONESTEMPORAL
+}
+ 
 for novedades in `ls -p $DIRINPUT | grep -v /`; do
     #Verifico que el archivo a procesar no este vacio
     if [ ! -s "$DIRINPUT/$novedades" ]; then
         echo "El archivo $novedades esta vacio, NO ES ACEPTABLE"
-        #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+        mv "$DIRINPUT/$novedades" $DIRRECHAZO
         continue
     fi
 
     #Validar que es un archivo regular, de texto, legible
-    if [ ! -f "$DIRINPUT/$novedades" ]; then
-        echo "El archivo $novedades , NO ES UN ARCHIVO REGULAR"
-        #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-        continue
-    fi
+    # if [ ! -f "$DIRINPUT/$novedades" ]; then
+    #     echo "El archivo $novedades , NO ES UN ARCHIVO REGULAR"
+    #     #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+    #     continue
+    # fi
 
-    if [ ! -r "$DIRINPUT/$novedades" ]; then
-        echo "El archivo $novedades , NO SE PUEDE LEER"
-        #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-        continue
-    fi
-
+    # if [ ! -r "$DIRINPUT/$novedades" ]; then
+    #     echo "El archivo $novedades , NO SE PUEDE LEER"
+    #     #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+    #     continue
+    # fi
+    #ESTO CUMPLE EL PUNTO DE LEGIBLE. -f es si existe, -r es si es readable (no corta con ese)
     if [ ! "$(file $DIRINPUT/$novedades)" = "$DIRINPUT/$novedades: ASCII text" ]; then
         echo "El archivo $novedades es ilegible, NO ES ACEPTABLE"
-        #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+        mv "$DIRINPUT/$novedades" $DIRRECHAZO
         continue
     fi
     #igual que arriba pero con regex.. ???
@@ -187,19 +202,21 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
 
             # Si el registro de cabecera no existe, se rechaza todo el archivo
             # Si el registro de cabecera indica un MERCHANT_CODE distinto al que viene en el nombre externo del archivo, se rechaza todo el archivo
-            cabeceraOk=`echo $registroNovedad | grep -c "^TFH;[^;]*;$merchantCode;[^;]*;[^;]*;[^;]*;[^;]*;;;;;;;$"`
-            if [ $cabeceraOk -ne 1 ]; then
+            cabecera=`echo $registroNovedad | grep "^TFH;[^;]*;$merchantCode;[^;]*;[^;]*;[^;]*;[^;]*;;;;;;;$"`
+            if [ -z "$cabecera" ]; then
                 echo "Error en registro de cabecera. El archivo $novedades NO ES ACEPTABLE"
-                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                #continue
+                borrarTmp
+                mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                break
             fi
 
             # Si el registro de cabecera indica NUMBER_OF_TRX_RECORDS = 00000, se rechaza todo el archivo.
             numberTrxRecords=`echo $registroNovedad | cut -d ';' -f7`
             if [ $numberTrxRecords -eq 0 ]; then
                 echo "NUMBER_OF_TRX_RECORDS = 0. El archivo $novedades NO ES ACEPTABLE"
-                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                #continue
+                borrarTmp
+                mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                break
             fi
 
             # NUMBER_OF_TRX_RECORDS nos indica cuantos registros de transacciones vienen a continuación, si esto no coincide con lo que realmente viene, se rechaza todo el archivo
@@ -207,8 +224,9 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             cantRegTFDNovedades=`expr $cantRegNovedades - 1`
             if [ $cantRegTFDNovedades -ne $numberTrxRecords ]; then
                 echo "NUMBER_OF_TRX_RECORDS inconsistente. El archivo $novedades NO ES ACEPTABLE"
-                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                #continue
+                borrarTmp
+                mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                break
             fi
             
             esCabecera=0
@@ -226,7 +244,8 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             if [ $transaccionOk -ne 1 ]; then
                 echo $registroNovedad
                 echo "Error RECORD_TYPE en registro de transaccion. El archivo $novedades NO ES ACEPTABLE"
-                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                borrarTmp
+                mv "$DIRINPUT/$novedades" $DIRRECHAZO
                 break
             fi
 
@@ -234,8 +253,19 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             recordNumerTransaccion=`echo $registroNovedad | cut -d ';' -f2`
             if [ `expr $recordNumerTransaccion - $lineaLeida` -ne 0 ]; then
                 echo "RECORD_NUMBER inconsistente. El archivo $novedades NO ES ACEPTABLE"
-                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                #continue
+                borrarTmp
+                mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                break
+            fi
+
+            # Si el PROCESSING_CODE de algún registro TFD no indica un valor permitido (000000 o 111111), se rechaza todo el archivo
+            processingCode=`echo $registroNovedad | cut -d ';' -f12`
+
+            if [ "$processingCode" != "$DEBITO" -a "$processingCode" != "$CREDITO" ]; then
+                echo "El ProcessingCode $processingCode, no indica un valor permitido"
+                borrarTmp
+                mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                break
             fi
 
             # Si el ID_PAYMENT_METHOD de algún registro TFD no indica un valor que existe en la tabla de tarjetas homologadas, se rechaza todo el archivo
@@ -244,116 +274,192 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             if [ -z "$reg_tjtHomologada" ]; then
                 #el if me pide comillas para tratar como una sola cadena..
                 echo "EL idPaymentMethod, $idPaymentMethod; no corresponde a una Tarjeta Homologada"
-                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                #continue
+                borrarTmp
+                mv "$DIRINPUT/$novedades" $DIRRECHAZO
+                break
             fi
 
-            # Si el PROCESSING_CODE de algún registro TFD no indica un valor permitido (000000 o 111111), se rechaza todo el archivo
-            processingCode=`echo $registroNovedad | cut -d ';' -f12`
-            debito="000000"
-            credito="111111"
-            if [ "$processingCode" != "$debito" -a "$processingCode" != "$credito" ]; then
-                echo "El ProcessingCode $processingCode, no indica un valor permitido"
-                #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                #continue
+            #GUARDO EN ARCHIVOS TEMPORALES. SI NO ES VALIDA LA ENTRADA DESCARTO. SINO LOGUEO DEFINITIVO CUANDO TERMINA DE PROCESAR EL ARCHIVO.
+            #EVITO ASI LEER DOS VECES TODOS LOS ARCHIVOS..
+
+            ############################
+            ####    Registros TFC - compensación
+            ############################
+            # Si dentro del mismo archivo tenemos un registro de débito (compras) y un registro de crédito (anulación de la compra) con el mismo ID_TRANSACTION, y ambos tienen el mismo TRX_AMOUNT entonces esos registros se compensan
+
+            ##EMPIEZO AQUI CICLO COMPENSACION
+            ##CHEQUEAR QUE EL NUEVO CICLO SEA CORRECTO ??? como es el match ???.
+
+            ##compenso las de igual ID_TRANSACTION. El archivo esta desordenado.
+            ##las de != ID_TRANSACTION se graban en el archivo liquidacion SETTLEMENT FILE correspondiente
+
+            idTransaction=`echo $registroNovedad | cut -d ';' -f3`
+            transactionMount=`echo $registroNovedad | cut -d ';' -f11`
+            
+            rate=0
+            processingCodeACompensar=0
+            if [ "$processingCode" = "$DEBITO" ]; then
+                processingCodeACompensar=$CREDITO
+                rate=`echo $reg_tjtHomologada | cut -d ';' -f4`
+            else
+                processingCodeACompensar=$DEBITO
+                rate=`echo $reg_tjtHomologada | cut -d ';' -f5`
+            fi
+
+            #Busco en el archivo coincidencias
+            #si compensa no lo grabo. Si aparece en el archivo idTransaction y transactionMount con processingCode opuesto
+            #si no compensa lo grabo.
+            registroNovedadACompensar=`grep "^[^;]*;[^;]*;$idTransaction;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;$transactionMount;$processingCodeACompensar;[^;]*;[^;]*$" "$DIRINPUT/$novedades"`
+            if [ -z "$registroNovedadACompensar" ]; then
+                #si entra aca no compensa
+                #grabo salidas de manera 'temporal' por si salta ERROR en el camino.
+
+                ############################
+                ####        Salida 1 – Grabar el archivo de liquidaciones
+                ############################
+                # Grabar las transacciones que no han sido compensadas en el archivo de liquidación (SETTLEMENT FILE) correspondiente.
+                # Si el archivo no existe, se crea
+                # Si el archivo existe, se agregan los nuevos registros
+                # El nombre de archivo de liquidación es SETTLEMENT_FILE-año-mes.txt, dónde
+                # • SETTLEMENT_FILE: este prefijo se obtiene de la tabla maestra tarjetashomologadas.txt, a partir del ID_PAYMENT_METHOD
+                # • Año del FILE_CREATION_DATE
+                # • Mes del FILE_CREATION_DATE
+
+                # ****Diseño del Archivo de liquidación
+                # Archivo de Liquidación:
+                # 	$DIROUT/VISA-aaaaa-mm.txt
+                # 	$DIROUT/MASTER-aaaaa-mm.txt
+                # 	$DIROUT/AMEX-aaaaa-mm.txt
+                # 	$DIROUT/SP-aaaaa-mm.txt
+                # Separador de campos: , (coma)
+                # *EJEMPLO EN EL PDF
+
+                #HAY UN ERROR EN LOS EJEMPLOS DEL EXCEL. LAS COL SETTLEMENT_FILE Y CARD_TYPE ESTAN INVERTIDOS
+                #DOCUMENTAR
+
+                #**HAY QUE USAR SEPARADOR DE CAMPOS , Y NO ; (CAMBIAR TODOS LOS ARCHIVOS, CUT Y GREP)
+                
+                settlementFile=`echo $reg_tjtHomologada | cut -d ';' -f6`
+                #FILE_CREATION_DATE del TFH tiene formato aaaammdd
+                fileCreationDateAAAAMM=`echo $cabecera |  cut -d ';' -f5 | sed 's/.\{2\}$//'`
+                fileCreationDateAAAA=`echo $fileCreationDateAAAAMM | sed 's/.\{2\}$//'`
+                fileCreationDateMM=`echo $fileCreationDateAAAAMM | sed 's/.\{4\}//'`
+                nombreArchivoALiquidar="$settlementFile-$fileCreationDateAAAA-$fileCreationDateMM.txt"
+
+                #FORMATO ARCHIVO LIQUIDACION
+                #SE GUARDA TODO EL REGISTRO TFD, salvo col 1 que va SOURCE_FILE
+                # SOURCE_FILE	Nombre del archivo de origen (sin extension)
+                sourceFile=`echo $novedades | sed 's/\.[a-z]*//'`
+
+                #SED REMPLAZO LA COL 1 de registro Novedad por SOURCE_FILE
+                registroLiquidacion=`echo $registroNovedad | sed "s/^TFD/$sourceFile/"`
+
+                #DOCUMENTAR CARPETA TMP
+                echo $registroLiquidacion >> "$DIRLIQUIDACIONTEMPORAL/$nombreArchivoALiquidar"
+
+                ############################
+                ####        Salida 2 – Grabar el archivo de comisiones
+                ############################
+
+                # Calcular el service charge de cada transacción y grabar el archivo de comisiones correspondiente.
+                # Si el archivo no existe, se crea
+                # Si el archivo existe, se agregan los nuevos registros
+                # El nombre de archivo de comisiones es MERCHANT_CODE_GROUP-año-mes.txt, dónde
+                # • MERCHANT_CODE_GROUP: este prefijo se obtiene de la tabla maestra comercios.txt, a partir del MERCHANT_CODE
+                # • Año del FILE_CREATION_DATE
+                # • Mes del FILE_CREATION_DATE
+
+                nombreArchivoComisiones="$merchantCode-$fileCreationDateAAAA-$fileCreationDateMM.txt"
+
+                # ****Cálculo del Service charge
+                # 1) Determinar el monto base para el calculo
+                # 	El monto base para el cálculo es el TRX_AMOUNT del registro TFD
+                # 	En este campo, los primeros diez dígitos representan la parte entera, los siguientes 2 dígitos representan la parte decimal.                
+
+                #caracteres: primeros 10 entera, 2 decimal
+                monto=`echo "scale=2; ($transactionMount/100)" | bc`
+
+                # 2) Determinar la tasa aplicable a la transacción
+                # 	Ir a la tabla de tarjetas homologadas y obtener el registro correspondiente al ID_PAYMENT_METHOD del registro TFD
+                # 	Si el PROCESSING_CODE del registro TFD es 000000 obtenemos el DEBIT_RATE (Tasa de comisión para los débitos)
+                # 	Si el PROCESSING_CODE del registro TFD es 111111 obtenemos el CREDIT_RATE (Tasa de comisión para los créditos)
+                # 	En este campo, los primeros dos dígitos representan la parte entera, los siguientes 4 dígitos representan la parte decimal.
+                # 	Por ejemplo
+                # 	DEBIT_RATE = 010000, la tasa es del 1,0000 %
+                # 	CREDIT_RATE = 005000, la tasa es del 0,5000 %
+
+                #tasa de comision
+                # 3) Calcular el service charge
+                # 	A = TRX_AMOUNT / 100: para obtener el monto con 2 dígitos decimales
+                # 	B = RATE / 10000: para obtener el rate con 4 dígitos decimales
+                # 	C = B / 100: para obtener el coeficiente de calculo
+                # 	D = A * C: para obtener el monto del service charge
+                # 	E = D * 10000 y rellenar hasta completar 12 posiciones con ceros a la izquierda: para obtener el monto del service charge a grabar*
+                # 	* service charge a grabar: En ese campo los primeros ocho dígitos representan la parte entera, los siguientes 4 dígitos representan la parte decimal. Siempre llenar con ceros a la izquierda
+                # 	Por lo tanto, puede EVITAR dividir por 10000 en el paso B y multiplicar por 10000 en el paso E
+
+                serviceCharge=`echo "scale=0; ($monto*$rate/100)" | bc`
+
+                # ****Diseño del archivo de Comisiones
+                # Archivo de Comisiones
+                # 	$DIROUT/comisiones/merchant_code_group-aaaaa-mm.txt
+                # SOURCE_FILE	Nombre del archivo de origen
+                # SOURCE_RECORD_NUMBER	Numero de registro de origen
+                # SOURCE_ID_TRANSACTION	Id de la transaccion de origen
+                # SOURCE_APPROVAL_CODE	Código de Aprobación de origen
+                aprobalCode=`echo $registroNovedad | cut -d ';' -f4`
+                # SOURCE_ID_PAYMENT_METHOD	Id de Medio de Pago de origen                
+                # tasa) RATE	Tasa de comision. Los primeros dos digitos representan la parte entera, los siguientes 4 digitos representan la parte decimal. Siempre llenar con ceros a la izquierda
+                # calculo) SERVICE_CHARGE	Cargo por Servicio. Los primeros ocho digitos representan la parte entera, los siguientes 4 digitos representan la parte decimal. Siempre llenar con ceros a la izquierda                
+                # tarjeta)BRAND	Marca de la Tarjeta. Siempre llenar con espacios a la derecha
+                brand=`echo $reg_tjtHomologada | cut -d ';' -f2`
+                # SOURCE_TRX_CREATION_DATE 	Local Transaction Date de origen
+                creationTrxDate=`echo $registroNovedad |  cut -d ';' -f9`
+                # SOURCE_TRX_CREATION_TIME	Local Transaction Time de origen
+                creationTrxTime=`echo $registroNovedad | cut -d ';' -f10`
+                # SOURCE_TRX_AMOUNT	Transaction Amount de origen
+                # SOURCE_PROCESSING_CODE	Processing Code de origen
+                # SOURCE_TRX_CURRENCY_CODE	Transaction Currency Code de origen
+                currencyCode=`echo $registroNovedad | cut -d ';' -f13`
+
+                #Formateo serviceCharge 12caracteres. Ceros a la izquierda
+                pad=$(printf '%0.1s' "0"{1..12})
+                relleno=$(printf '%*.*s' 0 $((12 - ${#serviceCharge})) "$pad")
+                serviceChargeFormateado=$relleno$serviceCharge
+
+                #documentar carpeta temporal
+                echo "$sourceFile,$recordNumerTransaccion,$idTransaction,$aprobalCode,$idPaymentMethod,$rate,$serviceChargeFormateado,$brand,$creationTrxDate,$creationTrxTime,$transactionMount,$processingCode,$currencyCode" >> "$DIRCOMISIONESTEMPORAL/$nombreArchivoComisiones"
             fi
         fi
  	done < "$DIRINPUT/$novedades"
+    
     esCabecera=1
     lineaLeida=0
+
+    #CODIGO PARA PASAR LOS TEMPORALES A LAS SALIDAS DEFINITIVAS PARA ESTE ARCHIVO PROCESADO.
+    #SI ESTA VACIO TMP, ES XQ HUVO ALGUN ERROR Y NO SE ACEPTO LA ENTRADA. SALE CON BREAK
+    for temporal in `ls $DIRLIQUIDACIONTEMPORAL`; do
+        cat $DIRLIQUIDACIONTEMPORAL/$temporal >> $DIROUT/$temporal
+        rm $DIRLIQUIDACIONTEMPORAL/$temporal
+    done
+    for temporal in `ls $DIRCOMISIONESTEMPORAL`; do
+        cat $DIRCOMISIONESTEMPORAL/$temporal >> $DIRCOMISIONES/$temporal
+        rm $DIRCOMISIONESTEMPORAL/$temporal
+    done
+
+    #mover novedad a lotes procesados
+    #nos salteamos dejarlos en OK... (partir el codigo)
+    #De esta manera, a medida de que se leen las novedades se procesan.
+    #Sino habria que armar:
+        #input a OK Filtro externo
+        #filtrar con sed las compensasiones
+        #tratar al archivo para las salidas
+    #Sino queda documentarlo.
+
+    #mv "$DIRINPUT/$novedades" $DIRLOTES
+
 done
 
-############################
-####    Registros TFC - compensación
-############################
-# Hay dos tipos de transacciones
-# • Los débitos se identifican por el PROCESSING_CODE = 000000
-# • Los créditos se identifican por el PROCESSING_CODE = 111111
-# Si dentro del mismo archivo tenemos un registro de débito (compras) y un registro de crédito (anulación de la compra) con el mismo ID_TRANSACTION, y ambos tienen el mismo TRX_AMOUNT entonces esos registros se compensan
-
-# ****Diseño del registro de tarjetas homologadas
-# Tabla de Tarjetas Homologadas: $DIRMAE/tarjetashomologadas.txt
-# Separador de campos: , (coma)
-
-##EMPIEZO AQUI CICLO COMPENSACION
-##CHEQUEAR QUE EL NUEVO CICLO SEA CORRECTO ??? como es el match ???
-
-#for novedades in `ls -p $DIRINPUT | grep -v /`; do
- #   while read linea; do
-  #      idTransaction=`echo $linea | cut -d ';' -f3`
-   #     transactionMount=`echo $linea | cut -d ';' -f11`
-    #   echo "$match"
-    #    if [ $match -eq 1 ]; then
-    #        echo "La Transaccion $idTransaction no fue compensada, se puede grabar en liquidaciones"
-    #    fi
-  #  done < "$DIRINPUT/$novedades"   
-#done
-
-
-
-############################
-####        Salida 1 – Grabar el archivo de liquidaciones
-############################
-# Grabar las transacciones que no han sido compensadas en el archivo de liquidación (SETTLEMENT FILE) correspondiente.
-# Si el archivo no existe, se crea
-# Si el archivo existe, se agregan los nuevos registros
-# El nombre de archivo de liquidación es SETTLEMENT_FILE-año-mes.txt, dónde
-# • SETTLEMENT_FILE: este prefijo se obtiene de la tabla maestra tarjetashomologadas.txt, a partir del ID_PAYMENT_METHOD
-# • Año del FILE_CREATION_DATE
-# • Mes del FILE_CREATION_DATE
-
-# ****Diseño del Archivo de liquidación
-# Archivo de Liquidación:
-# 	$DIROUT/VISA-aaaaa-mm.txt
-# 	$DIROUT/MASTER-aaaaa-mm.txt
-# 	$DIROUT/AMEX-aaaaa-mm.txt
-# 	$DIROUT/SP-aaaaa-mm.txt
-# Separador de campos: , (coma)
-# *EJEMPLO EN EL PDF
-
-############################
-####        Salida 2 – Grabar el archivo de comisiones
-############################
-
-# Calcular el service charge de cada transacción y grabar el archivo de comisiones correspondiente.
-# Si el archivo no existe, se crea
-# Si el archivo existe, se agregan los nuevos registros
-# El nombre de archivo de comisiones es MERCHANT_CODE_GROUP-año-mes.txt, dónde
-# • MERCHANT_CODE_GROUP: este prefijo se obtiene de la tabla maestra comercios.txt, a partir del MERCHANT_CODE
-# • Año del FILE_CREATION_DATE
-# • Mes del FILE_CREATION_DATE
-
-# ****Cálculo del Service charge
-# 1) Determinar el monto base para el calculo
-# 	El monto base para el cálculo es el TRX_AMOUNT del registro TFD
-# 	En este campo, los primeros diez dígitos representan la parte entera, los siguientes 2 dígitos representan la parte decimal.
-# 	Por ejemplo
-# 	TRX_AMOUNT = 000000534050, el monto es $5.340,50
-# 	TRX_AMOUNT = 000000007300, el monto es $73,00
-# 2) Determinar la tasa aplicable a la transacción
-# 	Ir a la tabla de tarjetas homologadas y obtener el registro correspondiente al ID_PAYMENT_METHOD del registro TFD
-# 	Si el PROCESSING_CODE del registro TFD es 000000 obtenemos el DEBIT_RATE (Tasa de comisión para los débitos)
-# 	Si el PROCESSING_CODE del registro TFD es 111111 obtenemos el CREDIT_RATE (Tasa de comisión para los créditos)
-# 	En este campo, los primeros dos dígitos representan la parte entera, los siguientes 4 dígitos representan la parte decimal.
-# 	Por ejemplo
-# 	DEBIT_RATE = 010000, la tasa es del 1,0000 %
-# 	CREDIT_RATE = 005000, la tasa es del 0,5000 %
-# 3) Calcular el service charge
-# 	A = TRX_AMOUNT / 100: para obtener el monto con 2 dígitos decimales
-# 	B = RATE / 10000: para obtener el rate con 4 dígitos decimales
-# 	C = B / 100: para obtener el coeficiente de calculo
-# 	D = A * C: para obtener el monto del service charge
-# 	E = D * 10000 y rellenar hasta completar 12 posiciones con ceros a la izquierda: para obtener el monto del service charge a grabar*
-# 	* service charge a grabar: En ese campo los primeros ocho dígitos representan la parte entera, los siguientes 4 dígitos representan la parte decimal. Siempre llenar con ceros a la izquierda
-# 	Por lo tanto, puede EVITAR dividir por 10000 en el paso B y multiplicar por 10000 en el paso E
-
-# *Varios ejemplos de Service charge para operaciones de Débito y Credito (PDF)
-
-# ****Diseño del archivo de Comisiones
-# Archivo de Comisiones
-# 	$DIROUT/comisiones/merchant_code_group-aaaaa-mm.txt
-# Separador de campos: , (coma)
-# *EJEMPLO PDF PAG 23
 
 ############################
 #### Contadores
@@ -378,61 +484,3 @@ done
 
 # ****Fin de ciclo
 # Cuando se termina el ciclo, el proceso principal duerme un minuto y se reinicia.
-
-
-
-#####codigo de un proceso
-# for archivo in `ls $LLEGADA_D`; do
-
-# 	filial=`echo $archivo | cut -d '.' -f1`
-# 	fecha=`echo $archivo | cut -d '.' -f2` #aaaamm > 201710
-
-# 	if [ $fecha -lt "201710" ]; then
-# 		mv "$LLEGADA_D/$archivo" $ERROR_D
-# 		continue
-# 	fi
-
-# 	#FILIAL_F: codFilial;descrFilial;direccion
-# 	reg_filial=`grep "^$filial;[^;]*;[^;]*$" $FILIAL_F`
-
-# 	if [ -z $reg_filial ]; then
-# 		mv "$LLEGADA_D/$archivo" $ERROR_D	
-# 		continue
-# 	fi
-
-# 	while read registro; do
-# 		#leo archivo llegada
-# 		#codProducto;cantidad;valor;fecha
-# 		codProducto=`echo $registro | cut -d ';' -f1`
-
-# 		reg_productos=`grep "^$codProducto;[^;]*;[^;]*$" $PRODUCTOS_F`
-# 		#codigoProducto;descr;prodMinima
-
-# 		if [ -z $reg_productos ]; then
-# 			#echo $registro >> $ERROR_F
-# 			mv "$LLEGADA_D/$archivo" $ERROR_D
-# 			OK=0
-# 			break
-# 		fi
-
-# 		if [ $1 = "-m" ]; then
-# 			#chequeo produccion minima
-# 			cantidad=`echo $registro | cut -d ';' -f2`
-# 			prodMinima=`echo $reg_productos | cut -d ';' -f3`
-
-# 			if [ $cantidad -le $prodMinima ]; then
-# 				mv "$LLEGADA_D/$archivo" $ERROR_D
-# 				OK=0
-# 				break
-# 			fi
-# 		fi
-
-# 	done < "$LLEGADA_D/$archivo"
-
-# 	if [ $OK -eq 1 ]; then
-# 		mv "$LLEGADA_D/$archivo" $VALIDADOS_D
-# 	fi
-
-# 	OK=1
-
-# done
