@@ -9,11 +9,20 @@
 
 
 echo "Verificamos que el proceso este corriendo!!!!!"
-# tomo el numero de proceso
-ProcessID=$(pgrep "procesoPral.sh")
-echo numero de proceso $ProcessID
 
-kill $ProcessID
+./estaEnEjecucion.sh "principal.sh"
+
+if [ $? -eq 0 ]; then
+	
+    # tomo el numero de proceso
+    ProcessID=$(pgrep "principal.sh")
+    echo numero de proceso $ProcessID
+
+    kill $ProcessID
+    echo "proceso detenido.."
+else
+    echo "el proceso no esta en ejecucion..."
+fi
 
 
 ########################################################################

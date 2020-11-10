@@ -19,14 +19,16 @@ fi
 
 ### verificar si el proceso ya esta corriendo #################
 echo "verificando si el proceso ya esta corriendo....."
-result=`ps -e | grep "procesoPral.sh"`
+
+./estaEnEjecucion.sh "principal.sh"
+
 if [ $? -eq 0 ]; then
-	echo "el proceso ya esta en ejcucion..."
+	#echo "el proceso ya esta en ejecución..."
     exit
 fi
 ################################################################
 # lanzamos el proceso principal
 # si usamos top vemos que el proceso se empezo a ejecutar en background
 
-./procesoPral.sh > /dev/null &
+./principal.sh > /dev/null &
 
