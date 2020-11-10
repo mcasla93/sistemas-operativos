@@ -162,7 +162,7 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
 
     # El MerchantCode debe existir en la tabla maestra de comercios
     merchantCode=`echo $novedades | cut -d '_' -f1 | sed 's/.\{1\}//'`
-    reg_comercio=`grep "^$merchantCode;[^;]*;[^;]*;[^;]*$" $ARCHIVOCOMERCIOS`
+    reg_comercio=`grep "^$merchantCode,[^,]*,[^,]*,[^,]*$" $ARCHIVOCOMERCIOS`
     if [ -z "$reg_comercio" ]; then
         #el if me pide comillas para tratar como una sola cadena..
         echo "EL MerchantCode, $merchantCode; no corresponde a un Comercio"
@@ -202,7 +202,7 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
 
             # Si el registro de cabecera no existe, se rechaza todo el archivo
             # Si el registro de cabecera indica un MERCHANT_CODE distinto al que viene en el nombre externo del archivo, se rechaza todo el archivo
-            cabecera=`echo $registroNovedad | grep "^TFH;[^;]*;$merchantCode;[^;]*;[^;]*;[^;]*;[^;]*;;;;;;;$"`
+            cabecera=`echo $registroNovedad | grep "^TFH,[^,]*,$merchantCode,[^,]*,[^,]*,[^,]*,[^,]*,,,,,,,$"`
             if [ -z "$cabecera" ]; then
                 echo "Error en registro de cabecera. El archivo $novedades NO ES ACEPTABLE"
                 borrarTmp
@@ -211,7 +211,7 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             fi
 
             # Si el registro de cabecera indica NUMBER_OF_TRX_RECORDS = 00000, se rechaza todo el archivo.
-            numberTrxRecords=`echo $registroNovedad | cut -d ';' -f7`
+            numberTrxRecords=`echo $registroNovedad | cut -d ',' -f7`
             if [ $numberTrxRecords -eq 0 ]; then
                 echo "NUMBER_OF_TRX_RECORDS = 0. El archivo $novedades NO ES ACEPTABLE"
                 borrarTmp
@@ -240,7 +240,7 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             # Siempre grabar en el log el nombre del archivo rechazado y bien en claro el motivo del rechazo y en que registro se presenta la anomalía
 
             # Si el RECORD_TYPE de algún registro TFD no indica el valor TFD, se rechaza todo el archivo
-            transaccionOk=`echo $registroNovedad | grep -c "^TFD;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*$"`
+            transaccionOk=`echo $registroNovedad | grep -c "^TFD,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*$"`
             if [ $transaccionOk -ne 1 ]; then
                 echo $registroNovedad
                 echo "Error RECORD_TYPE en registro de transaccion. El archivo $novedades NO ES ACEPTABLE"
@@ -250,7 +250,7 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             fi
 
             # Si el RECORD_NUMBER de algún registro TFD no se corresponde con el numero de registro correcto, se rechaza todo el archivo
-            recordNumerTransaccion=`echo $registroNovedad | cut -d ';' -f2`
+            recordNumerTransaccion=`echo $registroNovedad | cut -d ',' -f2`
             if [ `expr $recordNumerTransaccion - $lineaLeida` -ne 0 ]; then
                 echo "RECORD_NUMBER inconsistente. El archivo $novedades NO ES ACEPTABLE"
                 borrarTmp
@@ -259,7 +259,7 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             fi
 
             # Si el PROCESSING_CODE de algún registro TFD no indica un valor permitido (000000 o 111111), se rechaza todo el archivo
-            processingCode=`echo $registroNovedad | cut -d ';' -f12`
+            processingCode=`echo $registroNovedad | cut -d ',' -f12`
 
             if [ "$processingCode" != "$DEBITO" -a "$processingCode" != "$CREDITO" ]; then
                 echo "El ProcessingCode $processingCode, no indica un valor permitido"
@@ -269,8 +269,8 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             fi
 
             # Si el ID_PAYMENT_METHOD de algún registro TFD no indica un valor que existe en la tabla de tarjetas homologadas, se rechaza todo el archivo
-            idPaymentMethod=`echo $registroNovedad | cut -d ';' -f5`
-            reg_tjtHomologada=`grep "^$idPaymentMethod;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*$" $ARCHIVOTJTHOMOLOGADAS`
+            idPaymentMethod=`echo $registroNovedad | cut -d ',' -f5`
+            reg_tjtHomologada=`grep "^$idPaymentMethod,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*$" $ARCHIVOTJTHOMOLOGADAS`
             if [ -z "$reg_tjtHomologada" ]; then
                 #el if me pide comillas para tratar como una sola cadena..
                 echo "EL idPaymentMethod, $idPaymentMethod; no corresponde a una Tarjeta Homologada"
@@ -287,29 +287,28 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
             ############################
             # Si dentro del mismo archivo tenemos un registro de débito (compras) y un registro de crédito (anulación de la compra) con el mismo ID_TRANSACTION, y ambos tienen el mismo TRX_AMOUNT entonces esos registros se compensan
 
-            ##EMPIEZO AQUI CICLO COMPENSACION
-            ##CHEQUEAR QUE EL NUEVO CICLO SEA CORRECTO ??? como es el match ???.
+            ##EMPIEZO AQUI LA COMPENSACION
 
             ##compenso las de igual ID_TRANSACTION. El archivo esta desordenado.
             ##las de != ID_TRANSACTION se graban en el archivo liquidacion SETTLEMENT FILE correspondiente
 
-            idTransaction=`echo $registroNovedad | cut -d ';' -f3`
-            transactionMount=`echo $registroNovedad | cut -d ';' -f11`
+            idTransaction=`echo $registroNovedad | cut -d ',' -f3`
+            transactionMount=`echo $registroNovedad | cut -d ',' -f11`
             
             rate=0
             processingCodeACompensar=0
             if [ "$processingCode" = "$DEBITO" ]; then
                 processingCodeACompensar=$CREDITO
-                rate=`echo $reg_tjtHomologada | cut -d ';' -f4`
+                rate=`echo $reg_tjtHomologada | cut -d ',' -f4`
             else
                 processingCodeACompensar=$DEBITO
-                rate=`echo $reg_tjtHomologada | cut -d ';' -f5`
+                rate=`echo $reg_tjtHomologada | cut -d ',' -f5`
             fi
 
             #Busco en el archivo coincidencias
             #si compensa no lo grabo. Si aparece en el archivo idTransaction y transactionMount con processingCode opuesto
             #si no compensa lo grabo.
-            registroNovedadACompensar=`grep "^[^;]*;[^;]*;$idTransaction;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;$transactionMount;$processingCodeACompensar;[^;]*;[^;]*$" "$DIRINPUT/$novedades"`
+            registroNovedadACompensar=`grep "^[^,]*,[^,]*,$idTransaction,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,$transactionMount,$processingCodeACompensar,[^,]*,[^,]*$" "$DIRINPUT/$novedades"`
             if [ -z "$registroNovedadACompensar" ]; then
                 #si entra aca no compensa
                 #grabo salidas de manera 'temporal' por si salta ERROR en el camino.
@@ -339,9 +338,9 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
 
                 #**HAY QUE USAR SEPARADOR DE CAMPOS , Y NO ; (CAMBIAR TODOS LOS ARCHIVOS, CUT Y GREP)
                 
-                settlementFile=`echo $reg_tjtHomologada | cut -d ';' -f6`
+                settlementFile=`echo $reg_tjtHomologada | cut -d ',' -f6`
                 #FILE_CREATION_DATE del TFH tiene formato aaaammdd
-                fileCreationDateAAAAMM=`echo $cabecera |  cut -d ';' -f5 | sed 's/.\{2\}$//'`
+                fileCreationDateAAAAMM=`echo $cabecera |  cut -d ',' -f5 | sed 's/.\{2\}$//'`
                 fileCreationDateAAAA=`echo $fileCreationDateAAAAMM | sed 's/.\{2\}$//'`
                 fileCreationDateMM=`echo $fileCreationDateAAAAMM | sed 's/.\{4\}//'`
                 nombreArchivoALiquidar="$settlementFile-$fileCreationDateAAAA-$fileCreationDateMM.txt"
@@ -407,20 +406,20 @@ for novedades in `ls -p $DIRINPUT | grep -v /`; do
                 # SOURCE_RECORD_NUMBER	Numero de registro de origen
                 # SOURCE_ID_TRANSACTION	Id de la transaccion de origen
                 # SOURCE_APPROVAL_CODE	Código de Aprobación de origen
-                aprobalCode=`echo $registroNovedad | cut -d ';' -f4`
+                aprobalCode=`echo $registroNovedad | cut -d ',' -f4`
                 # SOURCE_ID_PAYMENT_METHOD	Id de Medio de Pago de origen                
                 # tasa) RATE	Tasa de comision. Los primeros dos digitos representan la parte entera, los siguientes 4 digitos representan la parte decimal. Siempre llenar con ceros a la izquierda
                 # calculo) SERVICE_CHARGE	Cargo por Servicio. Los primeros ocho digitos representan la parte entera, los siguientes 4 digitos representan la parte decimal. Siempre llenar con ceros a la izquierda                
                 # tarjeta)BRAND	Marca de la Tarjeta. Siempre llenar con espacios a la derecha
-                brand=`echo $reg_tjtHomologada | cut -d ';' -f2`
+                brand=`echo $reg_tjtHomologada | cut -d ',' -f2`
                 # SOURCE_TRX_CREATION_DATE 	Local Transaction Date de origen
-                creationTrxDate=`echo $registroNovedad |  cut -d ';' -f9`
+                creationTrxDate=`echo $registroNovedad |  cut -d ',' -f9`
                 # SOURCE_TRX_CREATION_TIME	Local Transaction Time de origen
-                creationTrxTime=`echo $registroNovedad | cut -d ';' -f10`
+                creationTrxTime=`echo $registroNovedad | cut -d ',' -f10`
                 # SOURCE_TRX_AMOUNT	Transaction Amount de origen
                 # SOURCE_PROCESSING_CODE	Processing Code de origen
                 # SOURCE_TRX_CURRENCY_CODE	Transaction Currency Code de origen
-                currencyCode=`echo $registroNovedad | cut -d ';' -f13`
+                currencyCode=`echo $registroNovedad | cut -d ',' -f13`
 
                 #Formateo serviceCharge 12caracteres. Ceros a la izquierda
                 pad=$(printf '%0.1s' "0"{1..12})
