@@ -32,8 +32,8 @@ LOG_PATH="${PARENT_PATH}/instalarTP.log";
 SEPARATOR="-"
 
 
+#Esta funcion agrega un registro con cualquier formato modular
 function addRegister(){
-	#Esta funcion registro modular, deberia servir para cualquier caso
 	register="";
 	fields=("$@");
 	
@@ -60,6 +60,19 @@ function log(){
 	addRegister "$LOG_PATH" "$DATE" "$type" "$message" "$source" "$USER" 
 }
 
+function logError(){
+	read IN;
+	DATE=$(date "+%D %T");
+	type=${TYPES[2]};
+	message="$IN";
+	source="$0";
+
+	#Mensaje a stderr
+	echo -e "$message" >&2;
+
+	addRegister "$LOG_PATH" "$DATE" "$type" "$message" "$source" "$USER" 
+}
+
 
 ###Verificar Instalacion
 function readIdentificationRegister(){
@@ -67,6 +80,13 @@ function readIdentificationRegister(){
 	identifier=$(echo "$1" | sed 's;\(.*\)-\(.*\);\1;');
 	value=$(echo "$1" | sed 's;\(.*\)-\(.*\);\2;');
 	
+	if [[ $2 -gt 1 ]]; then
+		local_index=$(( $2-2 ));
+		#Obtener el nombre del directorio a partir de value, reemplazo los nombres por default
+		dir_name=$(echo "$value" | sed 's;\(.*\)/\(.*$\);\2;');
+		installation_directories[$local_index]=$dir_name;
+	fi
+
 	#Verifica que el valor leido exista, sea un directorio, 
 	#que el identificador coincida en orden
 	if [[ -e "$value" && (-d "$value") && ("${IDENTIFIERS[$2]}" == "$identifier") ]]; then
@@ -101,13 +121,14 @@ function readConfigFile(){
 		#Lee solo los primeros 8 registros
 		if [[ index -lt ${#IDENTIFIERS[@]} ]]; then
 			readIdentificationRegister "$LINE" $index;
+			echo $index;
 			((index++));
 		else
 			log "${TYPES[0]}" "${LINE}\n" "$0";
 		fi
 	done < "$CONFIG_PATH"
 	if [[ g_files_ok -ne $OK ]]; then
-		log "${TYPES[2]}" "${RED}RESULTADO VERIFICACION:\tHay uno o varios directorios faltantes${NC}" "$0";
+		log "${TYPES[1]}" "${RED}RESULTADO VERIFICACION:\tHay uno o varios directorios faltantes${NC}" "$0";
 	fi
 	verifyConfigFiles
 		
@@ -169,7 +190,7 @@ function inputDirectoryName(){
 function finishInstallation(){
 	#En este momento estoy en $GRUPO
 	for i in ${!installation_directories[@]}; do
-		mkdir "${installation_directories[i]}"
+		mkdir "${installation_directories[i]}" 2>&1 | logError
 	done
 
 	#Subdirectorio /ok
@@ -179,30 +200,37 @@ function finishInstallation(){
 	#subdirectorio /comisiones
 	PATH_COMISIONES="${installation_directories[5]}/comisiones"
 	mkdir "$PATH_COMISIONES";
+	
+	msg="REPARADA"
+	if [[ "$1" == "instalacion" ]]; then
+		msg="COMPLETADA";
+	fi
+
+	log "${TYPES[0]}" "Estado de la instalacion:\t${msg}" "$0";
 
 	#return
 	echo $OK;
 }
 
 function handleUserConfirmation(){
-	log "${TYPES[0]}" "¿Confirma la instalacion? (SI-NO)";
+	log "${TYPES[0]}" "¿Confirma la $1? (SI-NO)";
 	read -r ANSWER;
 	case "${ANSWER}" in
 		[sS] | [sS][iI])
-			finishInstallation
+			finishInstallation "$1"
 		;;
 		[nN] | [nN][oO])
 			echo 0
 		;;
 	*)
-		echo "Favor de ingresar s/si o n/no"
+		log "${TYPES[0]}" "Favor de ingresar s/si o n/no" "$0";
 		;;
 	esac
 }
 
 function installationConfirmation(){
 	echo "TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo N" "$0"; 
-	log "${TYPES[0]}" "Tipo de proceso:\tINSTALACION" "$0";
+	log "${TYPES[0]}" "Tipo de proceso:\t$1" "$0";
 	log "${TYPES[0]}" "Directorio Padre:\t$GRUPO" "$0";
 	log "${TYPES[0]}" "Ubicación script de instalación:\t$GRUPO/so7508/instalarTP.sh" "$0";
 	log "${TYPES[0]}" "Log de la instalacion:	$GRUPO/so7508/instalarTP.log" "$0";
@@ -210,8 +238,9 @@ function installationConfirmation(){
 	log "${TYPES[0]}" "Log de la inicializacion:\t$GRUPO/so7508/inicarmbiente.log" "$0";
 	log "${TYPES[0]}" "Log del proceso principal:\t$GRUPO/so7508/pprincipal.log" "$0";
 	for i in ${!DIRECTORIES_INFO[@]}; do		
-		log "${TYPES[0]}" "${DIRECTORIES_INFO[i]}:\t${installation_directories[i]}" "$0";
+		log "${TYPES[0]}" "${DIRECTORIES_INFO[i]}:\t${GRUPO}/${installation_directories[i]}" "$0";
 	done
+	log "${TYPES[0]}" "Estado de la $1:\tLISTA" "$0";
 	
 }
 
@@ -225,6 +254,15 @@ function installation(){
 	done
 }
 
+function repair(){
+	echo -e "${DEBUG}TODO: Intentar reparar caso contrario avisar que deberia hacer el usuario${NC}"
+	installationConfirmation "REPARACION"
+	installation_ok=0;
+	installation_ok=$(handleUserConfirmation "reparacion");		
+	if [[ installation_ok -eq $OK ]]; then
+		createConfigFile "REPARACION"
+	fi
+}
 
 #Como todos son archivos, el echo funciona como un return si lo redirigo de la stdin
 function handleUserInput(){
@@ -238,7 +276,7 @@ function handleUserInput(){
 			exit 0;
 		;;
 	*)
-		echo "Favor de ingresar I/Install or S/Salir"
+		log "${TYPES[0]}" "Favor de ingresar I/Install or S/Salir" "$0"
 		;;
 	esac
 }
@@ -254,7 +292,7 @@ function createConfigFile(){
 		identifier_index=$((i + 2));
 		addRegister "$CONFIG_PATH" "${IDENTIFIERS[identifier_index]}" "${GRUPO}/${installation_directories[i]}";
 	done
-	appendAdditionalInfo "INSTALACION"
+	appendAdditionalInfo "$1"
 }
 
 function appendAdditionalInfo(){
@@ -270,9 +308,9 @@ cd "${PARENT_PATH}";
 cd "../"
 GRUPO=$(pwd);
 
-#Aca empiezo a instalar los Directorio ejecutable, tablas etc.
 log "${TYPES[0]}" "${GREEN}${TITLE} Bienvenido al instalador ${TITLE}${NC}" "$0";
 
+#Esta instalado?
 isInstalled_return=0;
 isInstalled;
 #Si esta instalado verificado que este correcto
@@ -281,29 +319,26 @@ if [[ $isInstalled_return -eq $OK ]]; then
 	readConfigFile;
 	if [[ g_files_ok -eq $OK ]]; then
 		log "${TYPES[0]}" "${GREEN}Sistema se encuentra instalado correctamente, saliendo${NC}" "$0";
-		exit 0;
 	else
-		echo -e "${DEBUG}TODO: Verificar si se puede reparar${NC}"
+		
+		repair;
 	fi
-fi
-
-#echo "Que desea hacer?"
-response="$(handleUserInput)";
-
-#SC2091 $(..) is for capturing and not for executing.
-#TODO: Eliminar opcion de reparacion, solo aparece cuando
-#ya esta instalado pero con errores.
-if [[ "${response}" == "${INSTALL}" ]]; then
-	installation_ok=0;
-	while [[ installation_ok -eq 0 ]]; do
-		installation;
-		installationConfirmation;
-		installation_ok=$(handleUserConfirmation);
-	done
-	#Creo archivo de configuracion
-	createConfigFile
 else
-	log "${TYPES[0]}" "Saliendo del instalador" "$0";
-	exit 1;
+	#No esta instalado
+	response="$(handleUserInput)";               
+	#SC2091 $(..) is for capturing and not for executing.
+	if [[ "${response}" == "${INSTALL}" ]]; then
+		installation_ok=0;
+		while [[ installation_ok -eq 0 ]]; do
+			installation;
+			installationConfirmation "INSTALACION";
+			installation_ok=$(handleUserConfirmation "instalacion");
+		done
+		#Creo archivo de configuracion
+		createConfigFile "INSTALACION"
+	else
+		log "${TYPES[0]}" "Saliendo del instalador" "$0";
+		exit 1;
+	fi
 fi
 
