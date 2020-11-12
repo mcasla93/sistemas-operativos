@@ -138,8 +138,9 @@ loger() {
     # $1 (INPUT OUTPUT ERROR INFO)
     # $2 (NOMBRE ARCHIVO)
     # $3 ;MENSAJE
+    DATE=`date +%d-%m-%Y-%T`
 
-    linea=`printf "%s - %s;%s\n" "$1" "$2" "$3"`
+    linea=`printf "%s - %s - %s;%s\n" "$DATE" "$1" "$2" "$3"`
     echo $linea >> $LOGPPRINCIPAL
 }
 
