@@ -18,15 +18,30 @@ export DIRPROC="DIRPROC"
 export DIROUT="DIROUT"
 }
 
-#begin
 
+# modo de invocacion
 if [ "$0" != "/bin/bash" ];
 then
     echo 'debe ejecutarlo con permisos [. ./Iniciar_B.sh] '
     exit
 fi
 
+#chequeo si el ambiente ya esta init
+./ambienteInicializado.sh >> /dev/null
+if [ $? -eq 0 ]
+then	
+	echo 'Ambiente ya inicializado...'
+    ./estaEnEjecucion.sh "principal"
+    if [ $? -eq 0 ]
+    then	
+        echo "el proceso ya esta corriendo use [frenarProceso] y vuelva a ejecutar"
+        return 1
+    fi
+fi  
+
 setVariables
 echo el ambiente fue inicializado......
+
+./principal.sh > /dev/null &
 
 
