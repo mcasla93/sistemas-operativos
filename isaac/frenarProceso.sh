@@ -5,17 +5,24 @@
 # 1- debe verificar si el proceso esta corriendo
 # 2- detener el proceso
 
-### Verificar que el proceso esta corriendo ############################
 
+### Verifica la cantidad de parámetros ############################
+if [ $# -ne 1 ]; then
+    echo "modo de invocación [./frenarPeroceso.sh] [nombreProceso]"
+    exit
+fi
+
+proceso=${1}
+### Verificar que el proceso esta corriendo ############################
 
 echo "Verificamos que el proceso este corriendo!!!!!"
 
-./estaEnEjecucion.sh "principal.sh"
+./estaEnEjecucion.sh ${proceso}
 
 if [ $? -eq 0 ]; then
 	
     # tomo el numero de proceso
-    ProcessID=$(pgrep "principal.sh")
+    ProcessID=$(pgrep "$proceso")
     echo numero de proceso $ProcessID
 
     kill $ProcessID
