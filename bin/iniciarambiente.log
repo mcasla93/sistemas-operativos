@@ -1,0 +1,24 @@
+11/18/20 01:24:29-INF-\033[0;32m################## Inicializando el sistema ##################\033[0m-./init.sh-isaac
+11/18/20 01:24:29-WAR-\033[0;33mdebe ejecutarlo con permisos [. ./IniciarAmbiente.sh]\033[0m-./init.sh-isaac
+11/18/20 01:24:39-INF-\033[0;32m################## Inicializando el sistema ##################\033[0m-/bin/bash-isaac
+11/18/20 01:24:39-WAR-\033[0;33mno existe el archivo de configuracion [instalarTP.conf]\033[0m-/bin/bash-isaac
+11/18/20 01:24:39-INF-\033[0;32mcarpetas de instalacion ...... correcto\033[0m-/bin/bash-isaac
+11/18/20 01:24:39-WAR-\033[0;33mFalta el archivo arrancarProceso.sh \033[0m-/bin/bash-isaac
+11/18/20 01:24:39-WAR-\033[0;33mscripts ...... incorrecto\033[0m-/bin/bash-isaac
+11/18/20 01:24:39-WAR-\033[0;33mPrimera ejecución....... lanzando proceso  \033[0m-/bin/bash-isaac
+11/18/20 01:29:08-INF-\033[0;32m################## Inicializando el sistema ##################\033[0m-./init.sh-isaac
+11/18/20 01:29:08-WAR-\033[0;33mdebe ejecutarlo con permisos [. ./IniciarAmbiente.sh]\033[0m-./init.sh-isaac
+11/18/20 01:30:00-INF-\033[0;32m################## Inicializando el sistema ##################\033[0m-/bin/bash-isaac
+11/18/20 01:30:00-WAR-\033[0;33mno existe el archivo de configuracion [instalarTP.conf]\033[0m-/bin/bash-isaac
+11/18/20 01:30:00-INF-\033[0;32mcarpetas de instalacion ...... correcto\033[0m-/bin/bash-isaac
+11/18/20 01:30:00-INF-\033[0;32mscripts ...... correcto\033[0m-/bin/bash-isaac
+11/18/20 01:30:00-WAR-\033[0;33mPrimera ejecución....... lanzando proceso  \033[0m-/bin/bash-isaac
+11/18/20 01:48:22-INF-\033[0;32m################## Inicializando el sistema ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/18/20 01:48:22-WAR-\033[0;33mdebe ejecutarlo con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
+11/18/20 01:48:32-INF-\033[0;32m################## Inicializando el sistema ##################\033[0m-/bin/bash-isaac
+11/18/20 01:48:32-WAR-\033[0;33mno existe el archivo de configuracion [instalarTP.conf]\033[0m-/bin/bash-isaac
+11/18/20 01:48:32-INF-\033[0;32mcarpetas de instalacion ...... correcto\033[0m-/bin/bash-isaac
+11/18/20 01:48:32-INF-\033[0;32mscripts ...... correcto\033[0m-/bin/bash-isaac
+11/18/20 01:48:32-WAR-\033[0;33mPrimera ejecución....... lanzando proceso  \033[0m-/bin/bash-isaac
+11/18/20 01:49:30-INF-\033[0;32m################## Inicializando el sistema ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/18/20 01:49:30-WAR-\033[0;33mdebe ejecutarlo con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
