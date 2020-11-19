@@ -3,55 +3,37 @@
 ############################
 ### Variables ambiente (vienen definidas)
 ############################
-# Directorio padre: $GRUPO
-# Ubicación script de instalación: $GRUPO/so7508/instalarTP.sh
-# Log de la instalación: $GRUPO/so7508/instalarTP.log
-# Archivo de configuración: $GRUPO/so7508/instalarTP.conf
-# Log de la inicialización: $GRUPO/so7508/inicarambiente.log
-# Log del proceso principal: $GRUPO/so7508/pprincipal.log
-LOGPPRINCIPAL="../so7508/pprincipal.log"
-# Directorio de ejecutables: $GRUPO/bin
-# Directorio de tablas maestras: $GRUPO/master
-DIRMAESTRO="../master"
-# Directorio de novedades: $GRUPO/input
-DIRINPUT="../input"
-# *Directorio novedades aceptadas: $GRUPO/input/ok
-DIRINPUTOK="../input/ok"
-# Directorio de rechazados: $GRUPO/rechazos
-DIRRECHAZO="../rechazos"
-# Directorio de lotes procesados: $GRUPO/lotes
-DIRLOTES="../lotes"
-# Directorio de transacciones: $GRUPO/output
-DIROUT="../output"
-# **Directorio de comisiones: $GRUPO/output/comisiones
 
 #VERIFICO QUE ESTE INICIALIZADO
 #Valido que las variables de entorno hayan sido inicializadas
-# if [[ -z ${vaAmbiente+x} ]]; then
-# 	echo "vaAmbiente no inicializadas"
-# 	exit
-# fi
 
-# Directorio padre: $GRUPO
-# Ubicación script de instalación: $GRUPO/so7508/instalarTP.sh
-# Log de la instalación: $GRUPO/so7508/instalarTP.log
-# Archivo de configuración: $GRUPO/so7508/instalarTP.conf
-# Log de la inicialización: $GRUPO/so7508/inicarambiente.log
-# Log del proceso principal: $GRUPO/so7508/pprincipal.log
-LOGPPRINCIPAL="../so7508/pprincipal.log"
+if [[ -z ${DIRMAE+x} || -z ${DIRIN+x} || -z ${DIRRECH+x} || -z ${DIRPROC+x} || -z ${DIROUT+x} || -z ${LOGPPRINCIPAL+x} || -z ${DIRCOMISIONES+x} ]]; then
+	echo "Sistema sin inicializar"
+	exit
+fi
+
+# # Log del proceso principal: $GRUPO/so7508/pprincipal.log
+# LOGPPRINCIPAL="../so7508/pprincipal.log"
+# DIRMAE="../master"
+# DIRIN="../input"
+# DIRRECH="../rechazos"
+# DIRPROC="../lotes"
+# # Directorio de transacciones: $GRUPO/output
+# DIROUT="../output"
+# # **Directorio de comisiones: $GRUPO/output/comisiones
+# DIRCOMISIONES="$DIROUT/comisiones/"
 
 ############################
 
 #Definir variables de la rutina
 TIEMPODORMIDO=60
-ARCHIVOCOMERCIOS="$DIRMAESTRO/comercios.txt"
-ARCHIVOTJTHOMOLOGADAS="$DIRMAESTRO/tarjetashomologadas.txt"
+ARCHIVOCOMERCIOS="$DIRMAE/comercios.txt"
+ARCHIVOTJTHOMOLOGADAS="$DIRMAE/tarjetashomologadas.txt"
 DEBITO="000000"
 CREDITO="111111"
 #                                       DOCUMENTAR CARPETA TMP
-DIRLIQUIDACIONTEMPORAL="$DIRINPUT/tmp/liquidaciones/"
-DIRCOMISIONES="$DIROUT/comisiones/"
-DIRCOMISIONESTEMPORAL="$DIRINPUT/tmp/comisiones/"
+DIRLIQUIDACIONTEMPORAL="$DIRIN/tmp/liquidaciones/"
+DIRCOMISIONESTEMPORAL="$DIRIN/tmp/comisiones/"
 #Definir constantes (mensajes, log..)
 MSJARCHIVOVACIO="esta vacio. NO ES ACEPTABLE"
 MSJARCHIVOILEGIBLE="es ilegible. NO ES ACEPTABLE"
@@ -124,8 +106,6 @@ CICLO=0
 # Los archivos aceptables se mueven tal como vienen al repositorio de novedades aceptadas.
 # Siempre grabar en el log el nombre del archivo aceptado.
 
-#cumple mando a $DIRINPUTOK, sino a $DIRRECHAZO
-
 borrarTmp() {
     #limpio carpeta TMP de liquidaciones. Borro y creo
     rm -r $DIRLIQUIDACIONTEMPORAL
@@ -168,29 +148,29 @@ do
     CICLO=`expr $CICLO + 1` 
     loger "INFO" "VOY POR EL CICLO" "$CICLO"
 
-    for novedades in `ls -p $DIRINPUT | grep -v /`; do
+    for novedades in `ls -p $DIRIN | grep -v /`; do
         #Verifico que el archivo a procesar no este vacio
-        if [ ! -s "$DIRINPUT/$novedades" ]; then
+        if [ ! -s "$DIRIN/$novedades" ]; then
             loger "ERROR" "$novedades" "$MSJARCHIVOVACIO"
-            #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-            mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+            #mv "$DIRIN/$novedades" $DIRRECH
+            mover "$DIRIN" "$DIRRECH" "$novedades"
             continue
         fi
 
         #Validar que es un archivo regular, de texto, legible
-        if [ ! "$(file $DIRINPUT/$novedades)" = "$DIRINPUT/$novedades: ASCII text" ]; then
+        if [ ! "$(file $DIRIN/$novedades)" = "$DIRIN/$novedades: ASCII text" ]; then
             loger "ERROR" "$novedades" "$MSJARCHIVOILEGIBLE"
-            #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-            mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+            #mv "$DIRIN/$novedades" $DIRRECH
+            mover "$DIRIN" "$DIRRECH" "$novedades"
             continue
         fi
 
         # Si en el directorio de procesados tenemos un archivo con nombre igual al recién llegado, este ultimo
         # se lo considera duplicado.
-        if [ -f "$DIRLOTES/$novedades" ]; then
+        if [ -f "$DIRPROC/$novedades" ]; then
             loger "ERROR" "$novedades" "$MSJARCHIVODUPLICADO"
-            #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-            mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+            #mv "$DIRIN/$novedades" $DIRRECH
+            mover "$DIRIN" "$DIRRECH" "$novedades"
             continue
         fi
 
@@ -199,8 +179,8 @@ do
         batchNumberCumple=`echo $batchNumber | grep "\<[0-9][0-9][0-9][0-9]\>"`
         if [ -z $batchNumberCumple ]; then
             loger "ERROR" "$novedades" "$MSJBATCHNUMBERINC"
-            #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-            mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+            #mv "$DIRIN/$novedades" $DIRRECH
+            mover "$DIRIN" "$DIRRECH" "$novedades"
             continue
         fi
 
@@ -210,8 +190,8 @@ do
         if [ -z "$reg_comercio" ]; then
             #el if me pide comillas para tratar como una sola cadena..
             loger "ERROR" "$novedades" "$MSJMERCHANTCODEINC"
-            #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-            mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+            #mv "$DIRIN/$novedades" $DIRRECH
+            mover "$DIRIN" "$DIRRECH" "$novedades"
             continue
         fi
 
@@ -251,8 +231,8 @@ do
                 if [ -z "$cabecera" ]; then
                     borrarTmp
                     loger "ERROR" "$novedades" "$MSJREGCABECERAINC"
-                    #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                    mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+                    #mv "$DIRIN/$novedades" $DIRRECH
+                    mover "$DIRIN" "$DIRRECH" "$novedades"
                     break
                 fi
 
@@ -261,19 +241,19 @@ do
                 if [ $numberTrxRecords -eq 0 ]; then
                     borrarTmp
                     loger "ERROR" "$novedades" "$MSJREGCABECERATFDVACIO"
-                    #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                    mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+                    #mv "$DIRIN/$novedades" $DIRRECH
+                    mover "$DIRIN" "$DIRRECH" "$novedades"
                     break
                 fi
 
                 # NUMBER_OF_TRX_RECORDS nos indica cuantos registros de transacciones vienen a continuación, si esto no coincide con lo que realmente viene, se rechaza todo el archivo
-                cantRegNovedades=`wc -l < "$DIRINPUT/$novedades"`
+                cantRegNovedades=`wc -l < "$DIRIN/$novedades"`
                 cantRegTFDNovedades=`expr $cantRegNovedades - 1`
                 if [ $cantRegTFDNovedades -ne $numberTrxRecords ]; then
                     borrarTmp
                     loger "ERROR" "$novedades" "$MSJREGCABECERATFDINC"
-                    #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                    mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+                    #mv "$DIRIN/$novedades" $DIRRECH
+                    mover "$DIRIN" "$DIRRECH" "$novedades"
                     break
                 fi
                 
@@ -293,8 +273,8 @@ do
                     echo $registroNovedad
                     borrarTmp
                     loger "ERROR" "$novedades" "$MSJREGTFDCONSTINC"
-                    #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                    mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+                    #mv "$DIRIN/$novedades" $DIRRECH
+                    mover "$DIRIN" "$DIRRECH" "$novedades"
                     break
                 fi
 
@@ -303,8 +283,8 @@ do
                 if [ `expr $recordNumerTransaccion - $lineaLeida` -ne 0 ]; then
                     borrarTmp
                     loger "ERROR" "$novedades" "$MSJREGTFDNUMINC"
-                    #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                    mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+                    #mv "$DIRIN/$novedades" $DIRRECH
+                    mover "$DIRIN" "$DIRRECH" "$novedades"
                     break
                 fi
 
@@ -314,8 +294,8 @@ do
                 if [ "$processingCode" != "$DEBITO" -a "$processingCode" != "$CREDITO" ]; then
                     borrarTmp
                     loger "ERROR" "$novedades" "$MSJREGTFDPCINC"
-                    #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                    mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+                    #mv "$DIRIN/$novedades" $DIRRECH
+                    mover "$DIRIN" "$DIRRECH" "$novedades"
                     break
                 fi
 
@@ -326,8 +306,8 @@ do
                     #el if me pide comillas para tratar como una sola cadena..
                     borrarTmp
                     loger "ERROR" "$novedades" "$MSJREGTFDIDMPINC"
-                    #mv "$DIRINPUT/$novedades" $DIRRECHAZO
-                    mover "$DIRINPUT" "$DIRRECHAZO" "$novedades"
+                    #mv "$DIRIN/$novedades" $DIRRECH
+                    mover "$DIRIN" "$DIRRECH" "$novedades"
                     break
                 fi
 
@@ -360,7 +340,7 @@ do
                 #Busco en el archivo coincidencias
                 #si compensa no lo grabo. Si aparece en el archivo idTransaction y transactionMount con processingCode opuesto
                 #si no compensa lo grabo.
-                registroNovedadACompensar=`grep "^[^,]*,[^,]*,$idTransaction,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,$transactionMount,$processingCodeACompensar,[^,]*,[^,]*$" "$DIRINPUT/$novedades"`
+                registroNovedadACompensar=`grep "^[^,]*,[^,]*,$idTransaction,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,$transactionMount,$processingCodeACompensar,[^,]*,[^,]*$" "$DIRIN/$novedades"`
                 if [ -z "$registroNovedadACompensar" ]; then
                     #si entra aca no compensa
                     #grabo salidas de manera 'temporal' por si salta ERROR en el camino.
@@ -482,7 +462,7 @@ do
                     echo "$sourceFile,$recordNumerTransaccion,$idTransaction,$aprobalCode,$idPaymentMethod,$rate,$serviceChargeFormateado,$brand,$creationTrxDate,$creationTrxTime,$transactionMount,$processingCode,$currencyCode" >> "$DIRCOMISIONESTEMPORAL/$nombreArchivoComisiones"
                 fi
             fi
-        done < "$DIRINPUT/$novedades"
+        done < "$DIRIN/$novedades"
         
         loger "INPUT" "$novedades" "$lineaLeida"
 
@@ -506,8 +486,8 @@ do
 
         # ****Evitar Reprocesos
         # Cuando se logra procesar un archivo aceptado se lo mueve a DIRPROC para evitar su reproceso
-        #mv "$DIRINPUT/$novedades" $DIRLOTES
-        mover "$DIRINPUT" "$DIRLOTES" "$novedades"
+        #mv "$DIRIN/$novedades" $DIRPROC
+        mover "$DIRIN" "$DIRPROC" "$novedades"
 
         #nos salteamos dejarlos en OK... (partir el codigo)
         #De esta manera, a medida de que se leen las novedades se procesan.
