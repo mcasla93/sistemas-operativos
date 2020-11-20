@@ -22,13 +22,3 @@
 11/18/20 01:48:32-WAR-\033[0;33mPrimera ejecución....... lanzando proceso  \033[0m-/bin/bash-isaac
 11/18/20 01:49:30-INF-\033[0;32m################## Inicializando el sistema ##################\033[0m-./iniciarAmbiente.sh-isaac
 11/18/20 01:49:30-WAR-\033[0;33mdebe ejecutarlo con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
-11/20/20 14:26:07-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
-11/20/20 14:26:07-WAR-\033[1;33m/home/isaac/git/so7508/bin/instalarTP.conf no existe\033[0m-./iniciarAmbiente.sh-isaac
-11/20/20 14:26:07-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
-11/20/20 14:26:16-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-/bin/bash-isaac
-11/20/20 14:26:16-WAR-\033[1;33m/home/isaac/git/so7508/bin/instalarTP.conf no existe\033[0m-/bin/bash-isaac
-11/20/20 14:26:16-INF-\n\033[0;32m################## VERIFICANDO ARCHIVO DE CONFIGURACION ##################\033[0m\n-/bin/bash-isaac
-11/20/20 14:26:16-INF-\033[0;32mExportando variable de entorno...... correcto \033[0m-/bin/bash-isaac
-11/20/20 14:26:16-WAR-\033[0;33mcarpetas de instalacion ...... incorrecto\033[0m-/bin/bash-isaac
-11/20/20 14:26:16-INF-\033[0;32mscripts de ejecución ...... correcto\033[0m-/bin/bash-isaac
-11/20/20 14:26:16-WAR-\033[0;33mEl sistema no se encuentra instalado correctamente, saliendo\033[0m-/bin/bash-isaac
