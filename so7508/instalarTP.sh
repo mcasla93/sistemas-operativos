@@ -16,7 +16,7 @@ QUIT="quit"
 
 
 #Nombres reservados
-RESERVED_NAMES=("GrupoN" "so7508" "original" "catedra" "propios" "testeos");
+RESERVED_NAMES=("Grupo4" "so7508" "original" "catedra" "propios" "testeos");
 DIRECTORIES_INFO=("Directorio de ejecutables" "Directorio de tablas maestras" "Directorio de novedades" "Directorio de rechazados" "Directorio de lotes procesados" "Directorio de transacciones");
 TYPES=("INF" "WAR" "ERR");
 
@@ -29,6 +29,7 @@ PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P );
 
 CONFIG_PATH="${PARENT_PATH}/instalarTP.conf";
 LOG_PATH="${PARENT_PATH}/instalarTP.log";
+
 SEPARATOR="-"
 
 
@@ -60,8 +61,10 @@ function log(){
 	addRegister "$LOG_PATH" "$DATE" "$type" "$message" "$source" "$USER" 
 }
 
+#Este solo funciona cuando se hace un redireccionamiento de la stderr
+#NO pasar por parametro
 function logError(){
-	read IN;
+	read -d '' IN;
 	DATE=$(date "+%D %T");
 	type=${TYPES[2]};
 	message="$IN";
@@ -73,9 +76,16 @@ function logError(){
 	addRegister "$LOG_PATH" "$DATE" "$type" "$message" "$source" "$USER" 
 }
 
+function compareFilesFromDirWithDir(){
+	if [[ $(diff -r "$1" "$2" | grep "$1") ]]; then
+		log "${TYPES[2]}" "${RED}ERROR:\tFaltan archivos en el directorio $2${NC}" "$0"
+		g_files_ok=0
+	fi
+}
+
 
 ###Verificar Instalacion
-function readIdentificationRegister(){
+function readConfigFileLine(){
 	#TODO: faltan verificar los subdirectorios
 	identifier=$(echo "$1" | sed 's;\(.*\)-\(.*\);\1;');
 	value=$(echo "$1" | sed 's;\(.*\)-\(.*\);\2;');
@@ -89,9 +99,17 @@ function readIdentificationRegister(){
 
 	#Verifica que el valor leido exista, sea un directorio, 
 	#que el identificador coincida en orden
+	#Si es el /bin(installation_directoires[0]) o /master (installation_directoires[1]) 
+	#ver que tengan los mismo archivos que la carpeta original 
 	if [[ -e "$value" && (-d "$value") && ("${IDENTIFIERS[$2]}" == "$identifier") ]]; then
 		log "${TYPES[0]}" "${GREEN}OK: ${identifier}${NC}" "$0";
 		log "${TYPES[0]}" " - Path: ${value}\n" "$0";
+		#Si es DIRBIN o DIRMAE
+		if [[ "$identifier" == "${IDENTIFIERS[2]}" ]]; then
+			compareFilesFromDirWithDir "${SOURCE_BIN_ORIGINAL}" "$value"
+		elif [[ "$identifier" == "${IDENTIFIERS[3]}"   ]]; then
+			compareFilesFromDirWithDir "${SOURCE_MASTER_ORIGINAL}" "$value"
+		fi
 	else
 		log "${TYPES[2]}" "${RED}ERROR:\tEl directorio $identifier no se encuentra${NC}" "$0";
 		log "${TYPES[2]}" "${ORANGE} - Path: $value${NC}\n" "$0";
@@ -99,38 +117,36 @@ function readIdentificationRegister(){
 	fi
 }
 
-function verifyConfigFiles(){
+function verifyInstallationDirFiles(){
 	#Verifica files de so7508 (no se si importa que esten, podria ser un warning)
 	#.conf debe existir porque es lo primero que se verifica
-	echo -e "${GREEN}${TITLE} VERIFICANDO ARCHIVOS EN so7508 ${TITLE}${NC}"
-	so7508_path="${GRUPO}/so7508/";
+	log "${TYPES[0]}" "${GREEN}${TITLE} VERIFICANDO ARCHIVOS EN so7508 ${TITLE}${NC}" "$0"
 	files=("instalarTP.sh" "instalarTP.log" "instalarTP.conf" "iniciarambiente.log" "pprincipal.log");
 	for i in ${!files[@]}; do
-		if [[ -e "${so7508_path}${files[i]}" ]]; then
+		if [[ -e "${PARENT_PATH}/${files[i]}" ]]; then
 			log "${TYPES[0]}" "${GREEN}OK: ${files[i]}${NC}" "$0"
 		else
-			log "${TYPES[1]}" "${YELLOW}WARNING: ${files[i]} no existe${NC}\n - Path:${so7508_path}${files[i]}" "$0";
+			log "${TYPES[1]}" "${YELLOW}WARNING: ${files[i]} no existe${NC}\n - Path:${PARENT_PATH}/${files[i]}" "$0";
 		fi
 	done
 }
 
-function readConfigFile(){
+function verifyInstallation(){
 	index=0;
-	log "${TYPES[0]}" "\n${GREEN}${TITLE} VERIFICANDO ARCHIVO DE CONFIGURACION $TITLE${NC}\n" "$0";
+	log "${TYPES[0]}" "\n${GREEN}${TITLE} VERIFICANDO ARCHIVO DE CONFIGURACION $TITLE${NC}\n" "$0"
 	while read -r LINE; do
 		#Lee solo los primeros 8 registros
 		if [[ index -lt ${#IDENTIFIERS[@]} ]]; then
-			readIdentificationRegister "$LINE" $index;
-			echo $index;
-			((index++));
+			readConfigFileLine "$LINE" $index
+			((index++))
 		else
-			log "${TYPES[0]}" "${LINE}\n" "$0";
+			log "${TYPES[0]}" "${LINE}\n" "$0"
 		fi
 	done < "$CONFIG_PATH"
 	if [[ g_files_ok -ne $OK ]]; then
-		log "${TYPES[1]}" "${RED}RESULTADO VERIFICACION:\tHay uno o varios directorios faltantes${NC}" "$0";
+		log "${TYPES[1]}" "${RED}RESULTADO VERIFICACION:\tHay uno o varios directorios faltantes${NC}" "$0"
 	fi
-	verifyConfigFiles
+	verifyInstallationDirFiles
 		
 }
 
@@ -138,10 +154,10 @@ function isInstalled(){
 	#Existe el instalarTP.conf?
 	if [ -e "$CONFIG_PATH" ]
 	then 
-		log "${TYPES[0]}" "${GREEN}$CONFIG_PATH existe${NC}" "$0";
-		isInstalled_return=$OK;
+		log "${TYPES[0]}" "${GREEN}$CONFIG_PATH existe${NC}" "$0"
+		isInstalled_return=$OK
 	else 
-		log "${TYPES[1]}" "${YELLOW}$CONFIG_PATH no existe${NC}" "$0";
+		log "${TYPES[1]}" "${YELLOW}$CONFIG_PATH no existe${NC}" "$0"
 	fi
 }
 
@@ -187,20 +203,37 @@ function inputDirectoryName(){
 	installation_directories[$3]="${input_dir_name}";
 }
 
+function copyAllFilesFromTo(){
+	#TODO: Ojo que logError tambien captura el verbose ya que va a stdout
+	from="$1";
+	to="$2"
+	cp -v "${from}"/* "${to}" 2>&1 | logError
+}
+
+function makeDirIfItDoesntExist(){
+	if ! [[ (-e "$1") && (-d "$1") ]]; then
+		mkdir -v "$1" 2>&1 | logError
+	fi
+}
+
 function finishInstallation(){
 	#En este momento estoy en $GRUPO
 	for i in ${!installation_directories[@]}; do
-		mkdir "${installation_directories[i]}" 2>&1 | logError
+		makeDirIfItDoesntExist "${installation_directories[i]}"
 	done
 
 	#Subdirectorio /ok
 	PATH_NOVEDADES_ACEPTADAS="${installation_directories[2]}/ok"
-	mkdir "$PATH_NOVEDADES_ACEPTADAS"; 
+	makeDirIfItDoesntExist "$PATH_NOVEDADES_ACEPTADAS"; 
 
 	#subdirectorio /comisiones
 	PATH_COMISIONES="${installation_directories[5]}/comisiones"
-	mkdir "$PATH_COMISIONES";
+	makeDirIfItDoesntExist "$PATH_COMISIONES";
 	
+	#Copio los archivos a /bin y a /master
+	copyAllFilesFromTo "${SOURCE_BIN_ORIGINAL}" "${GRUPO}/${installation_directories[0]}"
+	copyAllFilesFromTo "${SOURCE_MASTER_ORIGINAL}" "${GRUPO}/${installation_directories[1]}"
+
 	msg="REPARADA"
 	if [[ "$1" == "instalacion" ]]; then
 		msg="COMPLETADA";
@@ -220,7 +253,7 @@ function handleUserConfirmation(){
 			finishInstallation "$1"
 		;;
 		[nN] | [nN][oO])
-			echo 0
+			log "${TYPES[0]}" "$1 cancelada, saliendo" "$0"
 		;;
 	*)
 		log "${TYPES[0]}" "Favor de ingresar s/si o n/no" "$0";
@@ -235,7 +268,7 @@ function installationConfirmation(){
 	log "${TYPES[0]}" "Ubicación script de instalación:\t$GRUPO/so7508/instalarTP.sh" "$0";
 	log "${TYPES[0]}" "Log de la instalacion:	$GRUPO/so7508/instalarTP.log" "$0";
 	log "${TYPES[0]}" "Archivo de configuracion:\t$GRUPO/so7508/instalarTP.conf" "$0";
-	log "${TYPES[0]}" "Log de la inicializacion:\t$GRUPO/so7508/inicarmbiente.log" "$0";
+	log "${TYPES[0]}" "Log de la inicializacion:\t$GRUPO/so7508/iniciarmbiente.log" "$0";
 	log "${TYPES[0]}" "Log del proceso principal:\t$GRUPO/so7508/pprincipal.log" "$0";
 	for i in ${!DIRECTORIES_INFO[@]}; do		
 		log "${TYPES[0]}" "${DIRECTORIES_INFO[i]}:\t${GRUPO}/${installation_directories[i]}" "$0";
@@ -308,6 +341,10 @@ cd "${PARENT_PATH}";
 cd "../"
 GRUPO=$(pwd);
 
+SOURCE_BIN_ORIGINAL="${GRUPO}/original/or_bin"
+SOURCE_MASTER_ORIGINAL="${GRUPO}/original/or_master"
+
+
 log "${TYPES[0]}" "${GREEN}${TITLE} Bienvenido al instalador ${TITLE}${NC}" "$0";
 
 #Esta instalado?
@@ -316,11 +353,10 @@ isInstalled;
 #Si esta instalado verificado que este correcto
 if [[ $isInstalled_return -eq $OK ]]; then
 	g_files_ok=$OK;	
-	readConfigFile;
+	verifyInstallation;
 	if [[ g_files_ok -eq $OK ]]; then
 		log "${TYPES[0]}" "${GREEN}Sistema se encuentra instalado correctamente, saliendo${NC}" "$0";
-	else
-		
+	else	
 		repair;
 	fi
 else
