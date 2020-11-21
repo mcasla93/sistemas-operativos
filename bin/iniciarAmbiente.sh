@@ -28,7 +28,7 @@ IDENTIFIERS=("GRUPO" "DIRINST" "DIRBIN" "DIRMAE" "DIRIN" "DIRRECH" "DIRPROC" "DI
 #Siempre parent_path va a ser so7508, que es donde esta este Script
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P );
 
-CONFIG_PATH="${PARENT_PATH}/instalarTP.conf";
+#CONFIG_PATH="${PARENT_PATH}/instalarTP.conf";
 LOG_PATH="${PARENT_PATH}/iniciarambiente.log";
 SEPARATOR="-"
 
@@ -66,10 +66,11 @@ function isInstalled(){
 	#Existe el instalarTP.conf?
 	if [ -e "$CONFIG_PATH" ]
 	then 
-		log "${TYPES[0]}" "${GREEN}$CONFIG_PATH existe${NC}" "$0";
+		#log "${TYPES[0]}" "${GREEN}$CONFIG_PATH existe${NC}" "$0";
 		isInstalled_return=$OK;
 	else 
 		log "${TYPES[1]}" "${YELLOW}$CONFIG_PATH no existe${NC}" "$0";
+		isInstalled_return=$ERROR;
 	fi
 }
 
@@ -124,7 +125,7 @@ verificarScrips(){
 function loadConfig(){
 	linea=()
 	index=0;
-	log "${TYPES[0]}" "\n${GREEN}${TITLE} VERIFICANDO ARCHIVO DE CONFIGURACION $TITLE${NC}\n" "$0";
+	#log "${TYPES[0]}" "\n${GREEN}${TITLE} VERIFICANDO ARCHIVO DE CONFIGURACION $TITLE${NC}\n" "$0";
 	while read -r LINE; do
 			result=$(echo "$LINE" | sed 's;\(.*\)-\(.*\);\2;');
         	linea[index]=$result
@@ -139,8 +140,9 @@ function loadConfig(){
     export DIRRECH="${linea[5]}"
     export DIRPROC="${linea[6]}"
     export DIROUT="${linea[7]}"
-	export LOGPPRINCIPAL="LOGPPRINCIPAL"
-	export DIRCOMISIONES="DIRCOMISIONES"		
+	export DIRCOMISIONES="$DIROUT/comisiones/"
+	export LOGPPRINCIPAL="$GRUPO/so7508/pprincipal.log"
+
 
 	log "${TYPES[0]}" "${GREEN}Exportando variable de entorno...... correcto ${NC}" "$0";
 
@@ -175,15 +177,19 @@ fi
     return $OK             
 }
 
-##############main#####################
-#Estoy en so7508
+######################################################################
+#  			main
+######################################################################
 
 cd "${PARENT_PATH}";
+#echo "esroy en ${PARENT_PATH}";
 #Subo a $GRUPO
 cd "../"
 GRUPO=$(pwd);
-
+CONFIG_PATH="$GRUPO/so7508/instalarTP.conf"
+#echo "CONFIG_PATH $CONFIG_PATH"
 log "${TYPES[0]}" "${GREEN}${TITLE} Inicializando el entorno de ejecición ${TITLE}${NC}" "$0";
+
 
 # #Esta instalado?
 isInstalled_return=0;
@@ -246,7 +252,7 @@ if [[ $isInstalled_return -eq $OK ]]; then
 			if [ $scritps -eq $OK ] && [ $carpetas -eq $OK ] #&& [ $permisos -eq $OK ]
 			then 			
 				# LANZO EL PROCESO PINCIPAL
-				$PARENT_PATH/pprincipal.sh > /dev/null &		
+				$DIRBIN/pprincipal.sh > /dev/null &		
 				ProcessID=$(pgrep pprincipal)
 				log "${TYPES[0]}" "${GREEN}Proceso principal en ejecución Nº $ProcessID..........correcto ${NC}" "$0";
 				log "${TYPES[0]}" "${GREEN}Para finalizar el proceso principal debe ejecutar [frenarproceso.sh pprincipal] ${NC}" "$0";				
