@@ -15,7 +15,8 @@ estaEnEjecucion (){
 
     result=`ps -e | grep "$procesoObjetivo"`
     if [ $? -eq 0 ]; then
-        echo "[$procesoObjetivo] ya esta en ejecución..."
+        ProcessID=$(pgrep "$procesoObjetivo")
+        echo "[$procesoObjetivo] ya esta en ejecución... proceso Nº $ProcessID"
         return 0
     else
 		echo "[$procesoObjetivo] NO esta en ejecución..."

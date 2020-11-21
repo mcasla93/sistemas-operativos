@@ -29,7 +29,7 @@ IDENTIFIERS=("GRUPO" "DIRINST" "DIRBIN" "DIRMAE" "DIRIN" "DIRRECH" "DIRPROC" "DI
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P );
 
 #CONFIG_PATH="${PARENT_PATH}/instalarTP.conf";
-LOG_PATH="${PARENT_PATH}/iniciarambiente.log";
+#LOG_PATH="${GRUPO}/so7508/iniciarambiente.log";
 SEPARATOR="-"
 
 
@@ -144,7 +144,7 @@ function loadConfig(){
 	export LOGPPRINCIPAL="$GRUPO/so7508/pprincipal.log"
 
 
-	log "${TYPES[0]}" "${GREEN}Exportando variable de entorno...... correcto ${NC}" "$0";
+	log "${TYPES[0]}" "${GREEN}Exportando variable de entorno \t \t...... correcto ${NC}" "$0";
 
 }
 
@@ -173,8 +173,9 @@ function ambienteInicializado {
 
 if [[ -z ${DIRMAE+x} || -z ${DIRIN+x} || -z ${DIRRECH+x} || -z ${DIRPROC+x} || -z ${DIROUT+x} || -z ${LOGPPRINCIPAL+x} || -z ${DIRCOMISIONES+x} ]]; then
     return $ERROR
-fi    
+else    
     return $OK             
+fi
 }
 
 ######################################################################
@@ -182,12 +183,15 @@ fi
 ######################################################################
 
 cd "${PARENT_PATH}";
-#echo "esroy en ${PARENT_PATH}";
+#echo "parent path  ${PARENT_PATH}";
 #Subo a $GRUPO
 cd "../"
 GRUPO=$(pwd);
+#echo "GRUPO $GRUPO"
 CONFIG_PATH="$GRUPO/so7508/instalarTP.conf"
 #echo "CONFIG_PATH $CONFIG_PATH"
+LOG_PATH="${GRUPO}/so7508/iniciarambiente.log";
+
 log "${TYPES[0]}" "${GREEN}${TITLE} Inicializando el entorno de ejecición ${TITLE}${NC}" "$0";
 
 
@@ -225,10 +229,10 @@ if [[ $isInstalled_return -eq $OK ]]; then
 			verificarCarpetas 
 			if [ $? -eq $OK ]
 			then
-			    log "${TYPES[0]}" "${GREEN}carpetas de instalacion ...... correcto${NC}" "$0";
+			    log "${TYPES[0]}" "${GREEN}carpetas de instalacion \t \t...... correcto${NC}" "$0";
 				carpetas=$OK;	
 			else
-			    log "${TYPES[1]}" "${ORANGE}carpetas de instalacion ...... incorrecto${NC}" "$0";
+			    log "${TYPES[1]}" "${ORANGE}carpetas de instalacion \t \t ...... incorrecto${NC}" "$0";
 				carpetas=$ERROR;	
 			fi
 
@@ -241,10 +245,10 @@ if [[ $isInstalled_return -eq $OK ]]; then
 			verificarScrips
 			if [ $? -eq $OK ]
 			then
-				log "${TYPES[0]}" "${GREEN}scripts de ejecución ...... correcto${NC}" "$0";
+				log "${TYPES[0]}" "${GREEN}scripts de ejecución \t \t \t...... correcto${NC}" "$0";
 				scritps=$OK;	
 			else
-				log "${TYPES[1]}" "${ORANGE}scripts de ejecución ...... incorrecto${NC}" "$0";
+				log "${TYPES[1]}" "${ORANGE}scripts de ejecución \t \t \t...... incorrecto${NC}" "$0";
 				scritps=$ERROR;	
 			fi
 
@@ -254,7 +258,7 @@ if [[ $isInstalled_return -eq $OK ]]; then
 				# LANZO EL PROCESO PINCIPAL
 				$DIRBIN/pprincipal.sh > /dev/null &		
 				ProcessID=$(pgrep pprincipal)
-				log "${TYPES[0]}" "${GREEN}Proceso principal en ejecución Nº $ProcessID..........correcto ${NC}" "$0";
+				log "${TYPES[0]}" "${GREEN}Proceso principal en ejecución Nº $ProcessID \t ..........correcto ${NC}" "$0";
 				log "${TYPES[0]}" "${GREEN}Para finalizar el proceso principal debe ejecutar [frenarproceso.sh pprincipal] ${NC}" "$0";				
 
 			else

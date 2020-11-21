@@ -30,7 +30,7 @@ proceso=${1}
 echo "verificando el ambiente......"
 ./ambienteInicializado.sh
 if [ $? -ne 0 ]; then
-	echo "ejecute [ . ./incializarSistema.sh ]"
+	echo "ejecute [ . ./iniciarAmbiente.sh ]"
     exit
 fi
 
@@ -49,5 +49,7 @@ fi
 # lanzamos el proceso principal
 # si usamos top vemos que el proceso se empezo a ejecutar en background
 
-./$proceso > /dev/null &
 
+./$proceso > /dev/null &
+ProcessID=$(pgrep "$proceso")
+echo "$proceso en ejecucion id $ProcessID"

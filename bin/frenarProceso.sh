@@ -23,10 +23,9 @@ if [ $? -eq 0 ]; then
 	
     # tomo el numero de proceso
     ProcessID=$(pgrep "$proceso")
-    echo numero de proceso $ProcessID
 
     kill $ProcessID
-    echo "proceso detenido.."
+    echo "proceso detenido.. $ProcessID"
 else
     echo "el proceso no esta en ejecucion..."
 fi
