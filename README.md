@@ -37,12 +37,22 @@ O puede primero moverse al directorio so7508 y luego ejecutar el script
 
 4. Siga las instrucciones que apareceran en la terminal para proceder con la instalación del sistema.
 
+Debera escribir el nombre que quiera que tengan los directorios del programa
+
+![instalacionComienzo](/assets/images/instalacionComienzoE.png)
+
+
 5. Como ultimo paso aparece en la terminal un listado de los directorios a ser creados y aqui podra elegir terminar con la instalacion o voler atras para elegir nuevamente.
+
+
+![instalacionConfirmar](/assets/images/instalacionConfirmarE.png)
+
 
 6. Una vez finalizada la instalación puede comprobar la correcta instalación al ver que se ha creado (entre otros archivos) uno llamado **instalarTP.conf** en este encontrara 8 registros con identificadores (DIRBIN, DIRMAE, etc) que indican la dirección de cada carpeta qeu se ha creado y un noveno registro con información adicional sobre la instalación.
 
-Tambien puede volver a ejecutar el script **instaladorTP.sh** que hara una verificación de los archivos e indicara si el sistema se encuentra instalador correctamente (ver sección "Guia para la reparación del sistema")
+Nota: Tambien puede volver a ejecutar el script **instaladorTP.sh** que hara una verificación de los archivos e indicara si el sistema se encuentra instalador correctamente (ver sección "Guia para la reparación del sistema")
 
+![instalacionFinaliza](/assets/images/instalacionFinalizaE.png)
 
 
 

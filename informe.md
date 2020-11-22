@@ -19,6 +19,11 @@ Los mensajes tipo ERR quedan reservado a errores mas graves que pueden llevar al
 
 #### Restricciones en el nombre de los directorios
 
+1. Al ingresar el nombre del directorio esta NO permitido el uso de espacios intermedios. Ejemplo "so 7508"
+
+2. No esta permitido el uso de caracteres especiales, por ejemplo `!"#$%&//()="`
+
+3. No se pueden utilizar subcarpetas, solo se ingresa el nombre del directorio sin posibilidad de anidar mas directorios e.g. (bin/sub_bin/sub_sub_bin), el script rechaza el caracter "/" dado que es considerado un tipo de caracter especial.
 
 
 
