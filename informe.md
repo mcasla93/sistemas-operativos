@@ -12,10 +12,15 @@ Para el script de instalación (instalarTP.sh) se tienen las siguientes hipótes
 #### Reparacion:
 El script tiene en cuenta los casos de que los archivos no se encuentren dentro de los directorios (e.g las tablas maestras no estan en el DIRMAE) por lo que se hace una copia de la carpeta "original" a la carpeta a reparar y tambien el caso de que el directorio DIRMAE ni siquiera exista. En este ultimo caso primero se crea el directorio ,utilizando el valor del archivo **instalarTP.conf** asignado al identificador del directorio faltante y luego se procede como antes a copiar del directorio **original** al directorio faltante.
 
-#### logs:
+#### Logs
 Para los mensajes del tipo WAR lo interpretamos como aquellos errores que son predecibles y que estan dentro del alcance de resolucion del script, es decir por ejemplo el copiar archivos faltantes.
 
 Los mensajes tipo ERR quedan reservado a errores mas graves que pueden llevar al tener que abortar la ejecucion dado que no se puede continuar con la instalación/reparación porque ha ocurrido una falla en el proceso que compromete la correcta instalación o reparación del sistema.
+
+#### Restricciones en el nombre de los directorios
+
+
+
 
 ## Descripción de Problemas
 
@@ -34,6 +39,22 @@ e.g.
 ```
 Todos los mensajes del comando cp -v son redireccionados a la entrada de la funcion **logPipe** para poder generar el log correspondiente, el problema es en el caso de ser un error tambien es redirigido al stdout (2>&1) entonces la funcion genera el log pero como si fuera del tipo INF y no del tipo ERR. El error queda registrado pero no como un error si no como un mensaje infomativo
 
+Una solución planteda fue poner el comando dentro de un condicional y no redirigir la stderr a stdout, pero el problema es que al utilizar un pipe la condicion nunca se cumplia independientemente de si daba error el comando cp o no.
+Por lo que el codigo del bloque `logError` queda inalcanzable
+
+```
+	if cp -v "${from}"/* "${to}" | logPipe; then
+		logError 
+	fi
+```
+
+Otro intento fue remover el pipe:
+```
+	if cp -v "${from}"/* "${to}" then
+		logError 
+	fi
+```
+De esta manera, en el caso de haber un error si se ejecutaba el bloquq del **logError** pero no se captura el -verbose.
 
 
 
@@ -95,6 +116,8 @@ Suponiendo el caso de que se usan los nombres de directorio dados por defecto
 	* lotes
 	* output
 
+
+![installedDirs](/assets/images/installedDirs.png)
 
 
 
