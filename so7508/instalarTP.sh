@@ -134,8 +134,7 @@ function readConfigFileLine(){
 
 		
 	else
-		log "${TYPES[1]}" "${RED}ERROR:\tEl directorio $identifier no se encuentra${NC}\n - Path: ${value}${NC}\n"
-		
+		log "${TYPES[1]}" "${RED}ERROR:\tEl directorio $identifier no se encuentra${NC}\n - Path: ${value}${NC}\n"		
 		g_files_ok=0
 	fi
 }
@@ -185,7 +184,16 @@ function isInstalled(){
 }
 
 
+INVALID_CHARS='!"#$%&/()=?¡@{}[]\ '
 ###Instalacion
+function isNameValid(){
+	if [[ `expr index "$INVALID_CHARS" "$1"` -gt 0 ]]; then
+		log "${TYPES[1]}" "No se permiten el uso de los siguientes caracteres especiales: $INVALID_CHARS "
+		false
+	else
+		true
+	fi
+}
 
 function inputDirectoryName(){
 	if [[ $# -ne 3 ]]; then
@@ -202,22 +210,27 @@ function inputDirectoryName(){
 		log "${TYPES[0]}" "$2: ${GREEN}$default_dir_name${NC}"
 		read -r input_dir_name
 		log "${TYPES[0]}" "${input_dir_name}"
-		if [[ "$input_dir_name" == "" ]]; then
-			input_dir_name=$1
-			valid_input=1
-		elif [[ ${#input_dir_name} -lt 1 ]]; then
-			log "${TYPES[0]}" "Debe tener mas de un caracter"
+		if isNameValid "${input_dir_name}"; then
+			if [[ "$input_dir_name" == "" ]]; then
+				input_dir_name=$1
+				valid_input=1
+			elif [[ ${#input_dir_name} -lt 1 ]]; then
+				log "${TYPES[1]}" "Debe tener mas de un caracter"
+			else
+				valid_input=1
+				for i in "${!non_permitted_names[@]}"; do
+						if [ "${non_permitted_names[i]}" == "$input_dir_name" ]; then
+							log "${TYPES[1]}" "${YELLOW}¡No puede utilizar un nombre reservado!${NC}"
+							#La lista de nombres se toman como parametros, rompiendo con el diseño
+							log "${TYPES[1]}" "${YELLOW}Nombres reservados: ${non_permitted_names[*]}${NC}"
+							valid_input=0
+						fi
+				done
+			fi
 		else
-			valid_input=1
-			for i in "${!non_permitted_names[@]}"; do
-					if [ "${non_permitted_names[i]}" == "$input_dir_name" ]; then
-						log "${TYPES[0]}" "${YELLOW}No puede utilizar un nombre reservado${NC}"
-						#La lista de nombres se toman como parametros, rompiendo con el diseño
-						log "${TYPES[0]}" "Nombres reservados: ${non_permitted_names[@]}"
-						valid_input=0
-					fi
-			done
+			valid_input=0;
 		fi
+		
 	done
 
 	#Reemplazo el default por el dado por el usuario
@@ -260,7 +273,7 @@ function finishInstallation(){
 		msg="COMPLETADA"
 	fi
 
-	log "${TYPES[0]}" "Estado de la instalacion:\t${msg}"
+	log "${TYPES[0]}" "${GREEN}Estado de la instalacion:\t${msg}${NC}"
 
 	#return
 	echo $OK
@@ -274,7 +287,7 @@ function handleUserConfirmation(){
 			finishInstallation "$1"
 		;;
 		[nN] | [nN][oO])
-			log "${TYPES[0]}" "$1 cancelada, saliendo..."
+			log "${TYPES[0]}" "$1 cancelada"
 		;;
 	*)
 		log "${TYPES[0]}" "Favor de ingresar s/si o n/no"
@@ -283,7 +296,7 @@ function handleUserConfirmation(){
 }
 
 function installationConfirmation(){
-	log "${TYPES[0]}" "TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo N" 
+	log "${TYPES[0]}" "TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo 4" 
 	log "${TYPES[0]}" "Tipo de proceso:\t$1"
 	log "${TYPES[0]}" "Directorio Padre:\t$GRUPO"
 	log "${TYPES[0]}" "Ubicación script de instalación:\t$GRUPO/so7508/instalarTP.sh"
@@ -302,7 +315,7 @@ function installationConfirmation(){
 function installation(){
 	log "${TYPES[0]}" "${GREEN}${TITLE} Proceso de instalacion ${TITLE}${NC}"
 	log "${TYPES[0]}" "Escriba el nombre del directorio, para aceptar el por defecto presione ENTER"
-	#El argumento default debe actualizarse en el caso de que el user cancele la isntalacion con el ultimo valor que puso
+	#El argumento default debe actualizarse en el caso de que el user cancele la instalacion con el ultimo valor que puso
 	for (( j = 0; j < 6; j++ )); do
 		inputDirectoryName "${installation_directories[j]}" "${DIRECTORIES_INFO[j]}" $j #Al pasar i se que elemento sobrescribir
 	done
