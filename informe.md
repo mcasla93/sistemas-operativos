@@ -25,6 +25,14 @@ Una de las dificultades encontradas es el correcto registro de los mensajes de l
 Para los mensajes informativos se utilza una funcion **log** que se le pasa como parametro el mensaje, pero para el caso de comandos que se utilizan con la opcion **-verbose** se utiliza la funcion **logPipe** que no toma por parametro sino por redireccionamiento y luego el **logError** que funciona de la misma manera pero para los mensajes de la stderr.
 El problema es qe no se encontro una manera de poder separar los mensajes de stderr de los de stdout de manera de procesarlos por separado por las funciones de **logPipe** y **logError**
 e.g.
+```
+	function copyAllFilesFromTo(){
+		from="$1"
+		to="$2"
+		cp -v "${from}"/* "${to}" 2>&1 | logPipe
+	}
+```
+
 
 
 
@@ -52,6 +60,9 @@ Directorio padre: Grupo4
 	* catedra
 	* propios
 	* testeos
+
+![DownloadedDirs](/assets/images/downloadedDirs.png)
+
 
 #### Estructura de directorios despues de la instalación
 
