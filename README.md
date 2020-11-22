@@ -15,6 +15,8 @@
 #Documentacion
 
 *********************************************************************************************
+   Instalación
+*********************************************************************************************
 ### Guia para la instalación del sistema
 
 Primero debe realizar los pasos de la "Guía para la descarga del sistema" para poder continuar
@@ -37,7 +39,7 @@ O puede primero moverse al directorio so7508 y luego ejecutar el script
 
 	`$ cd so7508`
 
-	`$Tipee ./instalarTP.sh`
+	`$ ./instalarTP.sh`
 
 4. Siga las instrucciones que apareceran en la terminal para proceder con la instalación del sistema.
 
@@ -108,10 +110,8 @@ Si a pesar de seguir los pasos de la "Guia para la reparación del sistema" el s
 
 Nota: al borrar el archivo .conf el script detecta como que el programa nunca ha sido instalado, por lo tanto hara una instalación limpia.
 
-*********************************************************************************************
 
-#Documentacion
-		
+	
 *********************************************************************************************
    Ejecución
 *********************************************************************************************
