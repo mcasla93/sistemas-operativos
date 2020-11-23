@@ -68,3 +68,71 @@
 11/20/20 23:08:55-WAR-\033[0;33mEl ambiente está inicializado, pero pprincipal no esta en ejecución usar [arrancarProceso.sh pprincipal.sh] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
 11/20/20 23:14:47-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
 11/20/20 23:14:47-WAR-\033[0;33mEl ambiente está inicializado, pero pprincipal no esta en ejecución usar [arrancarProceso.sh pprincipal.sh] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:05:54-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:05:54-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:06:00-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-bash-isaac
+11/23/20 11:06:00-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-bash-isaac
+11/23/20 11:06:14-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-bash-isaac
+11/23/20 11:06:14-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-bash-isaac
+11/23/20 11:06:28-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-bash-isaac
+11/23/20 11:06:28-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-bash-isaac
+11/23/20 11:07:01-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:07:01-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:07:09-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-bash-isaac
+11/23/20 11:07:09-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-bash-isaac
+11/23/20 11:16:18-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-bash-isaac
+11/23/20 11:16:18-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-bash-isaac
+11/23/20 11:16:58-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-bash-isaac
+11/23/20 11:16:58-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-bash-isaac
+11/23/20 11:17:39-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:17:39-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:18:10-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:18:10-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:18:13-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-/bin/bash-isaac
+11/23/20 11:18:13-INF-\033[0;32mExportando variable de entorno \t \t...... correcto \033[0m-/bin/bash-isaac
+11/23/20 11:18:13-INF-\033[0;32mcarpetas de instalacion \t \t...... correcto\033[0m-/bin/bash-isaac
+11/23/20 11:18:13-INF-\033[0;32mscripts de ejecución \t \t \t...... correcto\033[0m-/bin/bash-isaac
+11/23/20 11:18:13-INF-\033[0;32mProceso principal en ejecución Nº 10828 \t ..........correcto \033[0m-/bin/bash-isaac
+11/23/20 11:18:13-INF-\033[0;32mPara finalizar el proceso principal debe ejecutar [frenarproceso.sh pprincipal] \033[0m-/bin/bash-isaac
+11/23/20 11:18:44-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:18:44-WAR-\033[0;33m Ambiente inicializado y ppral ya esta en ejecuión, debe ejecutar [frenarproceso.sh pprincipal] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:19:40-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 11:19:40-WAR-\033[0;33mEl ambiente está inicializado, pero pprincipal no esta en ejecución usar [arrancarProceso.sh pprincipal.sh] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 19:13:26-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 19:13:26-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 19:13:33-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-/bin/bash-isaac
+11/23/20 19:13:33-INF-\033[0;32mExportando variable de entorno \t \t...... correcto \033[0m-/bin/bash-isaac
+11/23/20 19:13:33-INF-\033[0;32mcarpetas de instalacion \t \t...... correcto\033[0m-/bin/bash-isaac
+11/23/20 19:13:33-INF-\033[0;32mscripts de ejecución \t \t \t...... correcto\033[0m-/bin/bash-isaac
+11/23/20 19:13:33-INF-\033[0;32mProceso principal en ejecución Nº 4180 \t ..........correcto \033[0m-/bin/bash-isaac
+11/23/20 19:13:33-INF-\033[0;32mPara finalizar el proceso principal debe ejecutar [frenarproceso.sh pprincipal] \033[0m-/bin/bash-isaac
+11/23/20 19:15:36-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 19:15:36-WAR-\033[0;33m Ambiente inicializado y ppral ya esta en ejecuión, debe ejecutar [frenarproceso.sh pprincipal] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 19:25:59-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 19:25:59-WAR-\033[0;33mEl ambiente está inicializado, pero pprincipal no esta en ejecución usar [arrancarProceso.sh pprincipal.sh] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:44:32-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:44:32-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:44:35-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-/bin/bash-isaac
+11/23/20 20:44:35-INF-\033[0;32mExportando variable de entorno \t \t...... correcto \033[0m-/bin/bash-isaac
+11/23/20 20:44:35-INF-\033[0;32mcarpetas de instalacion \t \t...... correcto\033[0m-/bin/bash-isaac
+11/23/20 20:44:35-INF-\033[0;32mscripts de ejecución \t \t \t...... correcto\033[0m-/bin/bash-isaac
+11/23/20 20:44:35-INF-\033[0;32mProceso principal en ejecución Nº 20735 \t ..........correcto \033[0m-/bin/bash-isaac
+11/23/20 20:44:35-INF-\033[0;32mPara finalizar el proceso principal debe ejecutar [frenarproceso.sh pprincipal] \033[0m-/bin/bash-isaac
+11/23/20 20:46:06-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:46:06-WAR-\033[0;33mEl ambiente está inicializado, pero pprincipal no esta en ejecución usar [arrancarProceso.sh pprincipal.sh] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:46:20-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:46:20-WAR-\033[0;33m La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:46:23-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-/bin/bash-isaac
+11/23/20 20:46:23-INF-\033[0;32mExportando variable de entorno \t \t...... correcto \033[0m-/bin/bash-isaac
+11/23/20 20:46:23-INF-\033[0;32mcarpetas de instalacion \t \t...... correcto\033[0m-/bin/bash-isaac
+11/23/20 20:46:23-INF-\033[0;32mscripts de ejecución \t \t \t...... correcto\033[0m-/bin/bash-isaac
+11/23/20 20:46:23-INF-\033[0;32mProceso principal en ejecución Nº 21043 \t ..........correcto \033[0m-/bin/bash-isaac
+11/23/20 20:46:23-INF-\033[0;32mPara finalizar el proceso principal debe ejecutar [frenarproceso.sh pprincipal] \033[0m-/bin/bash-isaac
+11/23/20 20:46:51-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:46:51-WAR-\033[0;33m Ambiente inicializado y ppral ya esta en ejecuión, debe ejecutar [frenarproceso.sh pprincipal] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:47:28-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:47:28-WAR-\033[0;33mEl ambiente está inicializado, pero pprincipal no esta en ejecución usar [arrancarProceso.sh pprincipal.sh] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:47:39-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:47:39-WAR-\033[0;33m Ambiente inicializado y ppral ya esta en ejecuión, debe ejecutar [frenarproceso.sh pprincipal] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:48:07-INF-\033[0;32m################## Inicializando el entorno de ejecición ##################\033[0m-./iniciarAmbiente.sh-isaac
+11/23/20 20:48:07-WAR-\033[0;33mEl ambiente está inicializado, pero pprincipal no esta en ejecución usar [arrancarProceso.sh pprincipal.sh] para reiniciar \033[0m-./iniciarAmbiente.sh-isaac
