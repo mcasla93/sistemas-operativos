@@ -32,6 +32,7 @@ ARCHIVOTJTHOMOLOGADAS="$DIRMAE/tarjetashomologadas.txt"
 DEBITO="000000"
 CREDITO="111111"
 #                                       DOCUMENTAR CARPETA TMP
+DIRTMP="$DIRIN/tmp/"
 DIRLIQUIDACIONTEMPORAL="$DIRIN/tmp/liquidaciones/"
 DIRCOMISIONESTEMPORAL="$DIRIN/tmp/comisiones/"
 #Definir constantes (mensajes, log..)
@@ -139,6 +140,11 @@ mover() {
         loger "RENAME" "$archivo" "$archivo$NOW"
     fi
 }
+
+#creo carpetas temporales
+mkdir $DIRTMP
+mkdir $DIRLIQUIDACIONTEMPORAL
+mkdir $DIRCOMISIONESTEMPORAL
 
 while true
 do
