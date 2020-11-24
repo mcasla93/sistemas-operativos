@@ -102,8 +102,8 @@ function compareFilesFromDirWithDir(){
 
 ###Verificar Instalacion
 function readConfigFileLine(){
-	identifier=$(echo "$1" | sed 's;\(.*\)-\(.*\);\1;');
-	value=$(echo "$1" | sed 's;\(.*\)-\(.*\);\2;');
+	identifier=$(echo "$1" | sed 's;^\([^-]*\)-\(.*\);\1;');
+	value=$(echo "$1" | sed 's;^\([^-]*\)-\(.*\);\2;');
 	
 	if [[ $2 -gt 1 ]]; then
 		local_index=$(( $2-2 ));
