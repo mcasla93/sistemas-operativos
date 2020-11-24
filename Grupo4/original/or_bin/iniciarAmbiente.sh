@@ -127,7 +127,8 @@ function loadConfig(){
 	index=0;
 	#log "${TYPES[0]}" "\n${GREEN}${TITLE} VERIFICANDO ARCHIVO DE CONFIGURACION $TITLE${NC}\n" "$0";
 	while read -r LINE; do
-			result=$(echo "$LINE" | sed 's;\(.*\)-\(.*\);\2;');
+			#result=$(echo "$LINE" | sed 's;\(.*\)-\(.*\);\2;');
+			result=$(echo "$LINE" | sed 's;^\([^-]*\)-\(.*\);\2;');
         	linea[index]=$result
 			((index++));
 	done < "$CONFIG_PATH"
@@ -209,7 +210,7 @@ if [[ $isInstalled_return -eq $OK ]]; then
 
 		if [ $? -eq $OK ]
 		then	
-			log "${TYPES[1]}" "${ORANGE} Ambiente inicializado y ppral ya esta en ejecuión, debe ejecutar [frenarproceso.sh pprincipal] para reiniciar ${NC}" "$0";        
+			log "${TYPES[1]}" "${ORANGE} Ambiente inicializado y proceso principal en ejecuión, debe ejecutar [frenarproceso.sh pprincipal] para reiniciar ${NC}" "$0";        
 		else
 			log "${TYPES[1]}" "${ORANGE}El ambiente está inicializado, pero pprincipal no esta en ejecución usar [arrancarProceso.sh pprincipal.sh] para reiniciar ${NC}" "$0";        		
 		fi

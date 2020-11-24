@@ -15,7 +15,7 @@ fi
 proceso=${1}
 ### Verificar que el proceso esta corriendo ############################
 
-echo "Verificamos que el proceso este corriendo!!!!!"
+#echo "Verificamos que el proceso este corriendo!!!!!"
 
 ./estaEnEjecucion.sh ${proceso}
 
@@ -24,7 +24,7 @@ if [ $? -eq 0 ]; then
     # tomo el numero de proceso
     ProcessID=$(pgrep "$proceso")
 
-    kill $ProcessID
+    kill $ProcessID > /dev/null &
     echo "proceso detenido.. $ProcessID"
 else
     echo "el proceso no esta en ejecucion..."
