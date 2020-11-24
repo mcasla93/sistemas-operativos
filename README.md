@@ -113,10 +113,12 @@ Nota: al borrar el archivo .conf el script detecta como que el programa nunca ha
 
 	
 *********************************************************************************************
-   Ejecución
+### Guia para la Ejecución
 *********************************************************************************************
-1. Para poder poner en funcionamiento el sistema, deberá tener inicializado el ambiente de trabajo. 
-	Ubíquese en el directorio donde han guardado los scripts y ejecute el script iniciarAmbiente.sh 
+1. #### inicializacion del ambiente
+
+	Para poder poner en funcionamiento el sistema, deberá tener inicializado el ambiente de trabajo. 
+	Ubíquese en el directorio donde han guardado los scripts, por defecto [./bin] y ejecute el script iniciarAmbiente.sh 
 	del siguiente modo:
 
 	$ . ./iniciarAmbiente.sh  (punto espacio punto barra)
@@ -125,8 +127,29 @@ Nota: al borrar el archivo .conf el script detecta como que el programa nunca ha
 	proceso principal no se generen sub-shells, ya que si eso ocurre el valor de las variables de ambiente
 	pierden visibilidad en el proceso principal.
 
-2. El inicializador de ambiente, informará si hay algún error, y en caso de querer terminar el proceso 
+	En caso de invocar el proceso sin el punto inicial, no dejara continuar ya que las variables de ambiente no serán visibles.
+
+	![InicializacionAmbiente](/assets/images/ejecucionPrimeraVez.png)
+
+	Ejecutando el script de la manéra indicada, si no hay errores, el ambiente se inícia y seguidamente el proceso principal es lanzado, 
+	se informa en pantalla y en el archivo iniciarAmbiente.log los resultados de cada etápa.
+
+	![InicializacionAmbiente](/assets/images/inicializacionDosPuntos.png)
+
+	#### TRATAMIENTO DE ERRORES
+	Durante el proceso de inicialización se pueden dar varios errores
+	1. #### Archivo InstalarTP.conf
+		Si hay algun tipo de error en el archivo de confiuración, no tenga permisos de lectúra o no exista se informará que debe ejecutar
+		el script de instalacion nuevamente y terminará la ejecición.
+
+		
+		![InicializacionAmbiente](/assets/images/ArchivoConfNoExiste.png)
+
+
+2. #### Frenar Proceso
+	El inicializador de ambiente, informará si hay algún error, y en caso de querer terminar el proceso 
 	de utilizar frenarProceso.sh
 
+3. #### Arrancar proceso
 
 #Documentacion
