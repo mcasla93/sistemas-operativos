@@ -1,0 +1,150 @@
+11/24/20 09:17:09-INF-\n\033[0;32m################## EJECUTANDO INSTALADOR instalarTP.sh ##################\033[0m\n-./instalarTP.sh-isaac
+11/24/20 09:17:09-WAR-\033[1;33m/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.conf no existe\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:09-INF-Instalar o Salir? I/S-./instalarTP.sh-isaac
+11/24/20 09:17:12-INF-\033[0;32m################## Proceso de instalacion ##################\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:12-INF-Escriba el nombre del directorio, para aceptar el por defecto presione ENTER-./instalarTP.sh-isaac
+11/24/20 09:17:12-INF-Directorio de ejecutables: \033[0;32mbin\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:13-INF--./instalarTP.sh-isaac
+11/24/20 09:17:13-INF-Directorio de tablas maestras: \033[0;32mmaster\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:14-INF--./instalarTP.sh-isaac
+11/24/20 09:17:14-INF-Directorio de novedades: \033[0;32minput\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:14-INF--./instalarTP.sh-isaac
+11/24/20 09:17:14-INF-Directorio de rechazados: \033[0;32mrechazos\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:14-INF--./instalarTP.sh-isaac
+11/24/20 09:17:14-INF-Directorio de lotes procesados: \033[0;32mlotes\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:14-INF--./instalarTP.sh-isaac
+11/24/20 09:17:14-INF-Directorio de transacciones: \033[0;32moutput\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF--./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo 4-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Tipo de proceso:\tINSTALACION-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Directorio Padre:\t/home/isaac/git/final/sistemas-operativos/Grupo4-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Ubicación script de instalación:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.sh-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Log de la instalacion:	/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.log-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Archivo de configuracion:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.conf-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Log de la inicializacion:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/iniciarambiente.log-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Log del proceso principal:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/pprincipal.log-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Directorio de ejecutables:\t/home/isaac/git/final/sistemas-operativos/Grupo4/bin-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Directorio de tablas maestras:\t/home/isaac/git/final/sistemas-operativos/Grupo4/master-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Directorio de novedades:\t/home/isaac/git/final/sistemas-operativos/Grupo4/input-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Directorio de rechazados:\t/home/isaac/git/final/sistemas-operativos/Grupo4/rechazos-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Directorio de lotes procesados:\t/home/isaac/git/final/sistemas-operativos/Grupo4/lotes-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Directorio de transacciones:\t/home/isaac/git/final/sistemas-operativos/Grupo4/output-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Estado de la INSTALACION:\tLISTA-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-¿Confirma la instalacion? (SI-NO)-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Favor de ingresar s/si o n/no-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-\033[0;32m################## Proceso de instalacion ##################\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Escriba el nombre del directorio, para aceptar el por defecto presione ENTER-./instalarTP.sh-isaac
+11/24/20 09:17:15-INF-Directorio de ejecutables: \033[0;32mbin\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:16-INF--./instalarTP.sh-isaac
+11/24/20 09:17:16-INF-Directorio de tablas maestras: \033[0;32mmaster\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:17-INF--./instalarTP.sh-isaac
+11/24/20 09:17:17-INF-Directorio de novedades: \033[0;32minput\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:18-INF-S-./instalarTP.sh-isaac
+11/24/20 09:17:18-INF-Directorio de rechazados: \033[0;32mrechazos\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:19-INF--./instalarTP.sh-isaac
+11/24/20 09:17:19-INF-Directorio de lotes procesados: \033[0;32mlotes\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:19-INF--./instalarTP.sh-isaac
+11/24/20 09:17:19-INF-Directorio de transacciones: \033[0;32moutput\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF--./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo 4-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Tipo de proceso:\tINSTALACION-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Directorio Padre:\t/home/isaac/git/final/sistemas-operativos/Grupo4-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Ubicación script de instalación:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.sh-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Log de la instalacion:	/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.log-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Archivo de configuracion:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.conf-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Log de la inicializacion:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/iniciarambiente.log-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Log del proceso principal:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/pprincipal.log-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Directorio de ejecutables:\t/home/isaac/git/final/sistemas-operativos/Grupo4/bin-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Directorio de tablas maestras:\t/home/isaac/git/final/sistemas-operativos/Grupo4/master-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Directorio de novedades:\t/home/isaac/git/final/sistemas-operativos/Grupo4/S-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Directorio de rechazados:\t/home/isaac/git/final/sistemas-operativos/Grupo4/rechazos-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Directorio de lotes procesados:\t/home/isaac/git/final/sistemas-operativos/Grupo4/lotes-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Directorio de transacciones:\t/home/isaac/git/final/sistemas-operativos/Grupo4/output-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-Estado de la INSTALACION:\tLISTA-./instalarTP.sh-isaac
+11/24/20 09:17:20-INF-¿Confirma la instalacion? (SI-NO)-./instalarTP.sh-isaac
+11/24/20 09:17:25-INF-instalacion cancelada-./instalarTP.sh-isaac
+11/24/20 09:17:25-INF-\033[0;32m################## Proceso de instalacion ##################\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:25-INF-Escriba el nombre del directorio, para aceptar el por defecto presione ENTER-./instalarTP.sh-isaac
+11/24/20 09:17:25-INF-Directorio de ejecutables: \033[0;32mbin\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:26-INF--./instalarTP.sh-isaac
+11/24/20 09:17:26-INF-Directorio de tablas maestras: \033[0;32mmaster\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:26-INF--./instalarTP.sh-isaac
+11/24/20 09:17:26-INF-Directorio de novedades: \033[0;32mS\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:27-INF--./instalarTP.sh-isaac
+11/24/20 09:17:27-INF-Directorio de rechazados: \033[0;32mrechazos\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:27-INF--./instalarTP.sh-isaac
+11/24/20 09:17:27-INF-Directorio de lotes procesados: \033[0;32mlotes\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF--./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Directorio de transacciones: \033[0;32moutput\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF--./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo 4-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Tipo de proceso:\tINSTALACION-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Directorio Padre:\t/home/isaac/git/final/sistemas-operativos/Grupo4-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Ubicación script de instalación:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.sh-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Log de la instalacion:	/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.log-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Archivo de configuracion:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.conf-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Log de la inicializacion:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/iniciarambiente.log-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Log del proceso principal:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/pprincipal.log-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Directorio de ejecutables:\t/home/isaac/git/final/sistemas-operativos/Grupo4/bin-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Directorio de tablas maestras:\t/home/isaac/git/final/sistemas-operativos/Grupo4/master-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Directorio de novedades:\t/home/isaac/git/final/sistemas-operativos/Grupo4/S-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Directorio de rechazados:\t/home/isaac/git/final/sistemas-operativos/Grupo4/rechazos-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Directorio de lotes procesados:\t/home/isaac/git/final/sistemas-operativos/Grupo4/lotes-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Directorio de transacciones:\t/home/isaac/git/final/sistemas-operativos/Grupo4/output-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-Estado de la INSTALACION:\tLISTA-./instalarTP.sh-isaac
+11/24/20 09:17:28-INF-¿Confirma la instalacion? (SI-NO)-./instalarTP.sh-isaac
+11/24/20 09:17:35-INF-\n\033[0;32m################## EJECUTANDO INSTALADOR instalarTP.sh ##################\033[0m\n-./instalarTP.sh-isaac
+11/24/20 09:17:35-WAR-\033[1;33m/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.conf no existe\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:35-INF-Instalar o Salir? I/S-./instalarTP.sh-isaac
+11/24/20 09:17:36-INF-Favor de ingresar I/Install or S/Salir-./instalarTP.sh-isaac
+11/24/20 09:17:36-INF-Saliendo del instalador-./instalarTP.sh-isaac
+11/24/20 09:17:38-INF-\n\033[0;32m################## EJECUTANDO INSTALADOR instalarTP.sh ##################\033[0m\n-./instalarTP.sh-isaac
+11/24/20 09:17:38-WAR-\033[1;33m/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.conf no existe\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:38-INF-Instalar o Salir? I/S-./instalarTP.sh-isaac
+11/24/20 09:17:40-INF-\033[0;32m################## Proceso de instalacion ##################\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:40-INF-Escriba el nombre del directorio, para aceptar el por defecto presione ENTER-./instalarTP.sh-isaac
+11/24/20 09:17:40-INF-Directorio de ejecutables: \033[0;32mbin\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:40-INF--./instalarTP.sh-isaac
+11/24/20 09:17:40-INF-Directorio de tablas maestras: \033[0;32mmaster\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:41-INF--./instalarTP.sh-isaac
+11/24/20 09:17:41-INF-Directorio de novedades: \033[0;32minput\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:41-INF--./instalarTP.sh-isaac
+11/24/20 09:17:41-INF-Directorio de rechazados: \033[0;32mrechazos\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:41-INF--./instalarTP.sh-isaac
+11/24/20 09:17:41-INF-Directorio de lotes procesados: \033[0;32mlotes\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF--./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Directorio de transacciones: \033[0;32moutput\033[0m-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF--./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo 4-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Tipo de proceso:\tINSTALACION-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Directorio Padre:\t/home/isaac/git/final/sistemas-operativos/Grupo4-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Ubicación script de instalación:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.sh-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Log de la instalacion:	/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.log-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Archivo de configuracion:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/instalarTP.conf-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Log de la inicializacion:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/iniciarambiente.log-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Log del proceso principal:\t/home/isaac/git/final/sistemas-operativos/Grupo4/so7508/pprincipal.log-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Directorio de ejecutables:\t/home/isaac/git/final/sistemas-operativos/Grupo4/bin-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Directorio de tablas maestras:\t/home/isaac/git/final/sistemas-operativos/Grupo4/master-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Directorio de novedades:\t/home/isaac/git/final/sistemas-operativos/Grupo4/input-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Directorio de rechazados:\t/home/isaac/git/final/sistemas-operativos/Grupo4/rechazos-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Directorio de lotes procesados:\t/home/isaac/git/final/sistemas-operativos/Grupo4/lotes-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Directorio de transacciones:\t/home/isaac/git/final/sistemas-operativos/Grupo4/output-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-Estado de la INSTALACION:\tLISTA-./instalarTP.sh-isaac
+11/24/20 09:17:42-INF-¿Confirma la instalacion? (SI-NO)-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-mkdir: se ha creado el directorio 'bin'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-mkdir: se ha creado el directorio 'master'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-mkdir: se ha creado el directorio 'input'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-mkdir: se ha creado el directorio 'rechazos'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-mkdir: se ha creado el directorio 'lotes'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-mkdir: se ha creado el directorio 'output'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-mkdir: se ha creado el directorio 'input/ok'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-mkdir: se ha creado el directorio 'output/comisiones'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-'/home/isaac/git/final/sistemas-operativos/Grupo4/original/or_bin/ambienteInicializado.sh' -> '/home/isaac/git/final/sistemas-operativos/Grupo4/bin/ambienteInicializado.sh'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-'/home/isaac/git/final/sistemas-operativos/Grupo4/original/or_bin/arrancarProceso.sh' -> '/home/isaac/git/final/sistemas-operativos/Grupo4/bin/arrancarProceso.sh'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-'/home/isaac/git/final/sistemas-operativos/Grupo4/original/or_bin/estaEnEjecucion.sh' -> '/home/isaac/git/final/sistemas-operativos/Grupo4/bin/estaEnEjecucion.sh'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-'/home/isaac/git/final/sistemas-operativos/Grupo4/original/or_bin/frenarProceso.sh' -> '/home/isaac/git/final/sistemas-operativos/Grupo4/bin/frenarProceso.sh'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-'/home/isaac/git/final/sistemas-operativos/Grupo4/original/or_bin/iniciarAmbiente.sh' -> '/home/isaac/git/final/sistemas-operativos/Grupo4/bin/iniciarAmbiente.sh'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-'/home/isaac/git/final/sistemas-operativos/Grupo4/original/or_bin/pprincipal.sh' -> '/home/isaac/git/final/sistemas-operativos/Grupo4/bin/pprincipal.sh'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-'/home/isaac/git/final/sistemas-operativos/Grupo4/original/or_master/comercios.txt' -> '/home/isaac/git/final/sistemas-operativos/Grupo4/master/comercios.txt'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-'/home/isaac/git/final/sistemas-operativos/Grupo4/original/or_master/tarjetashomologadas.txt' -> '/home/isaac/git/final/sistemas-operativos/Grupo4/master/tarjetashomologadas.txt'-./instalarTP.sh-isaac
+11/24/20 09:17:44-INF-\033[0;32mEstado de la instalacion:\tCOMPLETADA\033[0m-./instalarTP.sh-isaac
