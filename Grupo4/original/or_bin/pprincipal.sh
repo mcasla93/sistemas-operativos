@@ -36,6 +36,7 @@ DIRTMP="$DIRIN/tmp/"
 DIRLIQUIDACIONTEMPORAL="$DIRIN/tmp/liquidaciones/"
 DIRCOMISIONESTEMPORAL="$DIRIN/tmp/comisiones/"
 #Definir constantes (mensajes, log..)
+MSJNOMBREARCHIVOINC="nombre del archivo incorrecto. NO ES ACEPTABLE"
 MSJARCHIVOVACIO="esta vacio. NO ES ACEPTABLE"
 MSJARCHIVOILEGIBLE="es ilegible. NO ES ACEPTABLE"
 MSJARCHIVODUPLICADO="ya fue procesado. NO ES ACEPTABLE"
@@ -141,9 +142,15 @@ mover() {
 }
 
 #creo carpetas temporales
-mkdir $DIRTMP
-mkdir $DIRLIQUIDACIONTEMPORAL
-mkdir $DIRCOMISIONESTEMPORAL
+if [ ! -d $DIRTMP ];then
+    mkdir $DIRTMP
+fi
+if [ ! -d $DIRLIQUIDACIONTEMPORAL ];then
+    mkdir $DIRLIQUIDACIONTEMPORAL
+fi
+if [ ! -d $DIRCOMISIONESTEMPORAL ];then
+    mkdir $DIRCOMISIONESTEMPORAL
+fi
 
 while true
 do
@@ -154,6 +161,15 @@ do
     loger "INFO" "VOY POR EL CICLO" "$CICLO"
 
     for novedades in `ls -p $DIRIN | grep -v /`; do
+        #Verifico que el nombre del archivo sea el correcto
+        #FORMATO: 'C'+8nums+_Lote+4nums+.+3letras(extension)
+        cumpleNombreArchivo=`echo $novedades | grep "^C[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_Lote[0-9][0-9][0-9][0-9].[a-z][a-z][a-z]$"`
+        if [ -z $cumpleNombreArchivo ]; then
+            loger "ERROR" "$novedades" "$MSJNOMBREARCHIVOINC"
+            mover "$DIRIN" "$DIRRECH" "$novedades"
+            continue
+        fi
+
         #Verifico que el archivo a procesar no este vacio
         if [ ! -s "$DIRIN/$novedades" ]; then
             loger "ERROR" "$novedades" "$MSJARCHIVOVACIO"
