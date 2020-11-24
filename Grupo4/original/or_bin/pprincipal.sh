@@ -134,7 +134,6 @@ mover() {
 	    mv "$from/$archivo" "$to"
     else
         #si el archivo existe donde voy a moverlo, lo renombro + _Y/m/d_H:M:S.NanoSeconds
-        #documentar
         NOW=$(date +"_%Y-%m-%d_%H:%M:%S.%N")
 	    mv "$from/$archivo" "$to/$archivo$NOW"
         loger "RENAME" "$archivo" "$archivo$NOW"
