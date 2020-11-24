@@ -6,8 +6,17 @@
    Descarga del paquete
 ********************************************************************************************
 
-#Documentacion
-   
+### Descarga
+
+1. Ir al preositorio de GitHub
+[Repo](https://github.com/mcasla93/sistemas-operativos).
+
+2. Ir a la sección Release y descargar el source.zip de la ultima versión
+
+3. Una vez descargado descomprimir el .zip.
+
+El .zip consta de una carpeta Grupo4 que es el paquete de instalación, este README.md y el informe (informe.md)
+
 ********************************************************************************************
    Requisitos de instalación
 ********************************************************************************************
@@ -43,12 +52,12 @@ O puede primero moverse al directorio so7508 y luego ejecutar el script
 
 4. Siga las instrucciones que apareceran en la terminal para proceder con la instalación del sistema.
 
-Debera escribir el nombre que quiera que tengan los directorios del programa
+Cuando el instalador le indique debera escribir el nombre que quiera que tengan los directorios del programa
 
 ![instalacionComienzo](/assets/images/instalacionComienzoE.png)
 
 
-5. Como ultimo paso aparece en la terminal un listado de los directorios a ser creados y aqui podra elegir terminar con la instalacion o volver atras para elegir nuevamente.
+5. Como ultimo paso aparece en la terminal un listado de los directorios a ser creados y aqui podra elegir terminar con la instalacion o volver atras para elegir nuevamente por si quiere realizar un cambio.
 
 
 ![instalacionConfirmar](/assets/images/instalacionConfirmarE.png)
@@ -56,7 +65,7 @@ Debera escribir el nombre que quiera que tengan los directorios del programa
 
 6. Una vez finalizada la instalación puede comprobar la correcta instalación al ver que se ha creado (entre otros archivos) uno llamado **instalarTP.conf** en este encontrara 8 registros con identificadores (DIRBIN, DIRMAE, etc) que indican la dirección de cada carpeta qeu se ha creado y un noveno registro con información adicional sobre la instalación.
 
-Nota: Tambien puede volver a ejecutar el script **instaladorTP.sh** que hara una verificación de los archivos e indicara si el sistema se encuentra instalador correctamente (ver sección "Guia para la reparación del sistema")
+Nota: Tambien puede volver a ejecutar el script **instaladorTP.sh** que hará una verificación de los archivos e indicará si el sistema se encuentra instalado correctamente (ver sección "Guia para la reparación del sistema")
 
 ![instalacionFinaliza](/assets/images/instalacionFinalizaE.png)
 

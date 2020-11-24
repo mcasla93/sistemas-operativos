@@ -5,7 +5,7 @@
 
 ## Hipótesis y Aclaraciones
 
-### Hipotesis del punto 3
+### Hipótesis y Aclaraciones - Punto 3
 
 Para el script de instalación (instalarTP.sh) se tienen las siguientes hipótesis:
 
@@ -21,7 +21,7 @@ Los mensajes tipo ERR quedan reservado a errores mas graves que pueden llevar al
 
 1. Al ingresar el nombre del directorio esta NO permitido el uso de espacios intermedios. Ejemplo "so 7508"
 
-2. No esta permitido el uso de caracteres especiales, por ejemplo `!"#$%&//()="`
+2. No esta permitido el uso de caracteres especiales, por ejemplo `!"#$%&//()="`. El uso de '`-`' y '`_`' esta permitido
 
 3. No se pueden utilizar subcarpetas, solo se ingresa el nombre del directorio sin posibilidad de anidar mas directorios e.g. (bin/sub_bin/sub_sub_bin), el script rechaza el caracter "/" dado que es considerado un tipo de caracter especial.
 
@@ -75,15 +75,7 @@ Directorio padre: Grupo4
 	* s07508
 	* original
 		* or_bin
-			* ambienteInicializado.sh
-			* arrancarProceso.sh
-			* frenarProceso.sh
-			* estaEnEjecucion.sh
-			* iniciarAmbiente.sh
-			* pprincipal.sh
 		* or_master
-			* comercios.txt
-			* tarjetashomologadas.txt
 	* catedra
 	* propios
 	* testeos
@@ -96,37 +88,47 @@ Directorio padre: Grupo4
 Suponiendo el caso de que se usan los nombres de directorio dados por defecto
 
 * Grupo4
-	* s07508
-		* instalarTP.sh
-		* instalarTP.log
-		* instalarTP.conf	
+	* s07508	
 	* original
 		* or_bin	
-			* ambienteInicializado.sh
-			* arrancarProceso.sh
-			* frenarProceso.sh
-			* estaEnEjecucion.sh
-			* iniciarAmbiente.sh
-			* pprincipal.sh
 		* or_master
-			* comercios.txt
-			* tarjetashomologadas.txt	
 	* catedra
 	* propios
 	* testeos
 	* bin
 	* master
 	* input
+		* ok
 	* rechazos
 	* lotes
 	* output
+		* comisiones
 
 
 ![installedDirs](/assets/images/installedDirs.png)
 
 
 
+#### Estructura de directorios despues de una ejecución
 
+Suponiendo el caso de que se usan los nombres de directorio dados por defecto
+
+* Grupo4
+	* s07508	
+	* original
+		* or_bin	
+		* or_master
+	* catedra
+	* propios
+	* testeos
+	* bin
+	* master
+	* input
+		* ok
+	* rechazos
+	* lotes
+	* output
+		* comisiones
 
 
 
