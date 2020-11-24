@@ -178,19 +178,30 @@ Nota: al borrar el archivo .conf el script detecta como que el programa nunca ha
 
 	./frenarProceso.sh pprincipal.sh
 
-	El modo de invocación siempre será pasandole el nombre del proceso principal [pprincipal.sh] de otro modo no funciona
+	El modo de invocación siempre será pasandole el nombre del proceso principal [pprincipal.sh] de otro modo se obtendrá como salida un mensaje indicando el error.
 	
 	![InicializacionAmbiente](/assets/images/frenar.png)
 	
-	NOTA: Si se pasa otro nombre, el script tambien lo finalizará pero el resultado puede ser impredescible si se trata de un proceso del sistema operativo.
+	NOTA: Si se pasa el nombre de otro proceso, el script tratará de finalizarlo pero el resultado puede ser impredescible si se trata de un proceso del sistema operativo, 
+	El uso de este script siempre sera en el contexto del trabajo práctico.
 
 	#### HIPÓTESIS
 	El script siempre de ser llamado una vez inicializado el ambiente, de lo contrario lanzará un error, y además tambien lanzará mensajes de permisos denegados.
 
 	![InicializacionAmbiente](/assets/images/frenarError.png)
 
+	#### Archivo de log
+	Todo lo que el script frenarProceso.sh realize queda almacenado en el archivo arrancarFrenar.log ubicado en, 
 	
+	$GRUPO/so7508/arrancarFrenar.log
+
+		![InicializacionAmbiente](/assets/images/freanrlog.png)
 
 3. #### Arrancar proceso
+	#### HIPÓTESIS: 
+	Este script siempre se utiliza en el contexto del Trabajo práctico, si se ejecuta sin haber llamado a inicializarAmbiente.sh con los permisos indicados, devolverá mensajes de error,
+
+
+	![InicializacionAmbiente](/assets/images/arrancarproceso1.png)
 
 #Documentacion
