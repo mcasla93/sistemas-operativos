@@ -161,15 +161,6 @@ do
     loger "INFO" "VOY POR EL CICLO" "$CICLO"
 
     for novedades in `ls -p $DIRIN | grep -v /`; do
-        #Verifico que el nombre del archivo sea el correcto
-        #FORMATO: 'C'+8nums+_Lote+4nums+.+3letras(extension)
-        cumpleNombreArchivo=`echo $novedades | grep "^C[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_Lote[0-9][0-9][0-9][0-9].[a-z][a-z][a-z]$"`
-        if [ -z $cumpleNombreArchivo ]; then
-            loger "ERROR" "$novedades" "$MSJNOMBREARCHIVOINC"
-            mover "$DIRIN" "$DIRRECH" "$novedades"
-            continue
-        fi
-
         #Verifico que el archivo a procesar no este vacio
         if [ ! -s "$DIRIN/$novedades" ]; then
             loger "ERROR" "$novedades" "$MSJARCHIVOVACIO"
@@ -191,6 +182,15 @@ do
         if [ -f "$DIRPROC/$novedades" ]; then
             loger "ERROR" "$novedades" "$MSJARCHIVODUPLICADO"
             #mv "$DIRIN/$novedades" $DIRRECH
+            mover "$DIRIN" "$DIRRECH" "$novedades"
+            continue
+        fi
+
+        #Verifico que el nombre del archivo sea el correcto
+        #FORMATO: 'C'+8nums+_Lote+4nums+.+3letras(extension)
+        cumpleNombreArchivo=`echo $novedades | grep "^C[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_Lote[0-9][0-9][0-9][0-9].[a-z][a-z][a-z]$"`
+        if [ -z $cumpleNombreArchivo ]; then
+            loger "ERROR" "$novedades" "$MSJNOMBREARCHIVOINC"
             mover "$DIRIN" "$DIRRECH" "$novedades"
             continue
         fi
@@ -229,6 +229,7 @@ do
 
         esCabecera=1
         lineaLeida=0
+        ok=1
         #########para agregar una validacion nuestra..
         ##chequeo que el RECORD_NUMBER de TFH coincida con el numero 1 (lectura inicial)
         ##como pasa con la validacion de TFD
@@ -254,6 +255,7 @@ do
                     loger "ERROR" "$novedades" "$MSJREGCABECERAINC"
                     #mv "$DIRIN/$novedades" $DIRRECH
                     mover "$DIRIN" "$DIRRECH" "$novedades"
+                    ok=0
                     break
                 fi
 
@@ -264,6 +266,7 @@ do
                     loger "ERROR" "$novedades" "$MSJREGCABECERATFDVACIO"
                     #mv "$DIRIN/$novedades" $DIRRECH
                     mover "$DIRIN" "$DIRRECH" "$novedades"
+                    ok=0
                     break
                 fi
 
@@ -275,6 +278,7 @@ do
                     loger "ERROR" "$novedades" "$MSJREGCABECERATFDINC"
                     #mv "$DIRIN/$novedades" $DIRRECH
                     mover "$DIRIN" "$DIRRECH" "$novedades"
+                    ok=0
                     break
                 fi
                 
@@ -296,6 +300,7 @@ do
                     loger "ERROR" "$novedades" "$MSJREGTFDCONSTINC"
                     #mv "$DIRIN/$novedades" $DIRRECH
                     mover "$DIRIN" "$DIRRECH" "$novedades"
+                    ok=0
                     break
                 fi
 
@@ -306,6 +311,7 @@ do
                     loger "ERROR" "$novedades" "$MSJREGTFDNUMINC"
                     #mv "$DIRIN/$novedades" $DIRRECH
                     mover "$DIRIN" "$DIRRECH" "$novedades"
+                    ok=0
                     break
                 fi
 
@@ -317,6 +323,7 @@ do
                     loger "ERROR" "$novedades" "$MSJREGTFDPCINC"
                     #mv "$DIRIN/$novedades" $DIRRECH
                     mover "$DIRIN" "$DIRRECH" "$novedades"
+                    ok=0
                     break
                 fi
 
@@ -329,6 +336,7 @@ do
                     loger "ERROR" "$novedades" "$MSJREGTFDIDMPINC"
                     #mv "$DIRIN/$novedades" $DIRRECH
                     mover "$DIRIN" "$DIRRECH" "$novedades"
+                    ok=0
                     break
                 fi
 
@@ -485,11 +493,6 @@ do
             fi
         done < "$DIRIN/$novedades"
         
-        loger "INPUT" "$novedades" "$lineaLeida"
-
-        esCabecera=1
-        lineaLeida=0
-
         #CODIGO PARA PASAR LOS TEMPORALES A LAS SALIDAS DEFINITIVAS PARA ESTE ARCHIVO PROCESADO.
         #SI ESTA VACIO TMP, ES XQ HUVO ALGUN ERROR Y NO SE ACEPTO LA ENTRADA. SALE CON BREAK
         for temporal in `ls $DIRLIQUIDACIONTEMPORAL`; do
@@ -508,7 +511,16 @@ do
         # ****Evitar Reprocesos
         # Cuando se logra procesar un archivo aceptado se lo mueve a DIRPROC para evitar su reproceso
         #mv "$DIRIN/$novedades" $DIRPROC
-        mover "$DIRIN" "$DIRPROC" "$novedades"
+        
+        #esto no lo tendria que hacer cuando sale con error..
+        if [ $ok -eq 1 ]; then
+            loger "INPUT" "$novedades" "$lineaLeida"
+            mover "$DIRIN" "$DIRPROC" "$novedades"
+        fi
+
+        ok=1
+        esCabecera=1
+        lineaLeida=0
 
         #nos salteamos dejarlos en OK... (partir el codigo)
         #De esta manera, a medida de que se leen las novedades se procesan.
