@@ -257,7 +257,8 @@ if [[ $isInstalled_return -eq $OK ]]; then
 			if [ $scritps -eq $OK ] && [ $carpetas -eq $OK ] #&& [ $permisos -eq $OK ]
 			then 			
 				# LANZO EL PROCESO PINCIPAL
-				$DIRBIN/pprincipal.sh > /dev/null &		
+				
+				"${DIRBIN}/pprincipal.sh" > /dev/null &		
 				ProcessID=$(pgrep pprincipal)
 				log "${TYPES[0]}" "${GREEN}Proceso principal en ejecución Nº $ProcessID \t ..........correcto ${NC}" "$0";
 				log "${TYPES[0]}" "${GREEN}Para finalizar el proceso principal debe ejecutar [frenarproceso.sh pprincipal] ${NC}" "$0";				
