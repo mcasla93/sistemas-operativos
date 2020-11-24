@@ -195,13 +195,42 @@ Nota: al borrar el archivo .conf el script detecta como que el programa nunca ha
 	
 	$GRUPO/so7508/arrancarFrenar.log
 
-		![InicializacionAmbiente](/assets/images/freanrlog.png)
+	![InicializacionAmbiente](/assets/images/freanrlog.png)
 
 3. #### Arrancar proceso
 	#### HIPÓTESIS: 
 	Este script siempre se utiliza en el contexto del Trabajo práctico, si se ejecuta sin haber llamado a inicializarAmbiente.sh con los permisos indicados, devolverá mensajes de error,
 
-
 	![InicializacionAmbiente](/assets/images/arrancarproceso1.png)
+
+
+	El proceso usual, es primero inicializar el ambiente, lo que pondra en ejecución al proceso principal, el usuario podrá terminarlo, pero para poder reiniciarlo deberá ejecutar 
+
+	./arrancarProceso.sh pprincipal.sh
+
+	Si no se pasa el nombre del proceso a iniciar, devolverá un mensaje indicando el error.
+	Todo lo que el script arrancarProceso.sh realize queda almacenado en el archivo arrancarFrenar.log ubicado en, 
+	
+	$GRUPO/so7508/arrancarFrenar.log
+
+	![InicializacionAmbiente](/assets/images/freanrlog.png)
+
+4. #### SCRIPTS secundarios.
+	1.estaEnEjecucion.sh este script se utiliza para saber si el proceso principal esta corriendo
+	modo de invocación
+	
+	./estaEnEjecucion.sh nombreProceso
+
+	![InicializacionAmbiente](/assets/images/estaEnEjec.png)
+
+	2.ambienteInicializado.sh este script se puede usar para comprobar si el ambeinte ya esta inicializado, el script solamente verfica las variables de entorno,
+	si estan seteadas el sistema está inicializado de lo contrario no.
+
+	./ambienteInicializado.sh
+
+	
+	![InicializacionAmbiente](/assets/images/ambienteinicializado.png)
+
+
 
 #Documentacion
