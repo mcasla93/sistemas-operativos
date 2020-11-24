@@ -115,5 +115,18 @@ Nota: al borrar el archivo .conf el script detecta como que el programa nunca ha
 *********************************************************************************************
    Ejecución
 *********************************************************************************************
+1. Para poder poner en funcionamiento el sistema, deberá tener inicializado el ambiente de trabajo. 
+	Ubíquese en el directorio donde han guardado los scripts y ejecute el script iniciarAmbiente.sh 
+	del siguiente modo:
+
+	$ . ./iniciarAmbiente.sh  (punto espacio punto barra)
+	
+	La forma de invocación de este script es utilizada, para asegurar que cuando se invoque al
+	proceso principal no se generen sub-shells, ya que si eso ocurre el valor de las variables de ambiente
+	pierden visibilidad en el proceso principal.
+
+2. El inicializador de ambiente, informará si hay algún error, y en caso de querer terminar el proceso 
+	de utilizar frenarProceso.sh
+
 
 #Documentacion

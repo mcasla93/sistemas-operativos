@@ -1,0 +1,65 @@
+11/24/20 11:05:53-INF-\033[0;32mel proceso pprincipal.sh  \t \t...... no esta en ejecucion \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:10:53-INF-\033[0;32mverificando el ambiente...... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:11:08-WAR-\033[0;33mmodo de invocación [./frenarPeroceso.sh] [nombreProceso] \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:11:12-INF-\033[0;32mproceso Nº 10187 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:13:50-INF-\033[0;32mel proceso pprincipal.sh  \t \t...... no esta en ejecucion \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:14:03-WAR-\033[0;33mmodo de invocación [./arrancarPeroceso.sh] [nombreProceso] \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:14:08-INF-\033[0;32mverificando el ambiente...... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:14:08-INF-\033[0;32m verificando si el proceso ya esta corriendo..... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:14:08-INF-\033[0;32m pprincipal.sh en ejecucion id Nº 10370 \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:14:56-INF-\033[0;32mproceso Nº 10370 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:15:00-INF-\033[0;32mverificando el ambiente...... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:15:00-INF-\033[0;32m verificando si el proceso ya esta corriendo..... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:15:00-INF-\033[0;32m Iniciando pprincipal.sh en ejecucion id Nº 10442 \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:15:14-INF-\033[0;32mproceso Nº 10442 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:15:17-INF-\033[0;32mverificando el ambiente...... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:15:17-INF-\033[0;32m verificando si el proceso ya esta corriendo..... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:15:17-INF-\033[0;32m Iniciando pprincipal.sh .......... id Nº 10509 \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:15:30-INF-\033[0;32mproceso Nº 10509 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:18:08-INF-\033[0;32mel proceso pprincipal.sh  \t \t...... no esta en ejecucion \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:31:03-WAR-\033[0;33mmodo de invocación [./frenarPeroceso.sh] [nombreProceso] \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:31:08-INF-\033[0;32mproceso Nº 4433 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:31:29-WAR-\033[0;33mmodo de invocación [./arrancarPeroceso.sh] [nombreProceso] \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:31:33-INF-\033[0;32mverificando el ambiente...... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:31:33-INF-\033[0;32m verificando si el proceso ya esta corriendo..... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:31:33-INF-\033[0;32m Iniciando pprincipal.sh .......... id Nº 4513 \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:33:29-WAR-\033[0;33m modo de invocación [./arrancarPeroceso.sh] [nombreProceso] \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:33:31-INF-\033[0;32m verificando el ambiente...... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:33:31-INF-\033[0;32m verificando si el proceso ya esta corriendo..... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:33:31-WAR-\033[0;33m [principal.sh] esta en ejecución, si se quiere iniciar de nuevo, antes debe detener el proceso con frenarproceso \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:37:32-INF-\033[0;32m El ambiente esta inicializado \033[0m-./ambienteInicializado.sh-isaac
+11/24/20 11:37:42-INF-\033[0;32mproceso Nº 4513 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:37:58-INF-\033[0;32m verificando el ambiente...... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:37:58-INF-\033[0;32m El ambiente esta inicializado \033[0m-./ambienteInicializado.sh-isaac
+11/24/20 11:37:58-INF-\033[0;32m verificando si el proceso ya esta corriendo..... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:37:58-INF-\033[0;32m Iniciando pprincipal.sh .......... id Nº 5053 \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:38:09-INF-\033[0;32mproceso Nº 5053 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:41:50-WAR-\033[0;33mmodo de invocación [./frenarPeroceso.sh] [nombreProceso] \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:41:53-INF-\033[0;32m [pprincipal.sh] ya esta en ejecución... proceso Nº 5292 \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:41:53-INF-\033[0;32mproceso Nº 5292 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:43:26-WAR-\033[0;33m [pprincipal.sh] NO esta en ejecución... \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:43:26-INF-\033[0;32mel proceso pprincipal.sh  \t \t...... no esta en ejecucion \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:43:39-WAR-\033[0;33m modo de invocación [./arrancarPeroceso.sh] [nombreProceso] \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:43:43-INF-\033[0;32m verificando el ambiente...... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:43:43-INF-\033[0;32m El ambiente esta inicializado \033[0m-./ambienteInicializado.sh-isaac
+11/24/20 11:43:43-INF-\033[0;32m verificando si el proceso ya esta corriendo..... \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:43:43-WAR-\033[0;33m [pprincipal.sh] NO esta en ejecución... \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:43:43-INF-\033[0;32m Iniciando pprincipal.sh .......... id Nº 5401 \033[0m-./arrancarProceso.sh-isaac
+11/24/20 11:44:26-WAR-\033[0;33m no paso nombre del proceso.. \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:44:29-INF-\033[0;32m [pp] ya esta en ejecución... proceso Nº 998
+5401 \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:44:34-INF-\033[0;32m [pprincipal.sh] ya esta en ejecución... proceso Nº 5401 \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:44:41-INF-\033[0;32m [pprincipal.sh] ya esta en ejecución... proceso Nº 5401 \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:44:41-INF-\033[0;32mproceso Nº 5401 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:47:49-WAR-\033[0;33m [pprincipal.sh] NO esta en ejecución... \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:47:49-INF-\033[0;32m el proceso pprincipal.sh  \t \t...... no esta en ejecucion \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:48:49-WAR-\033[0;33m [pprincipal.sh] NO esta en ejecución... \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:48:49-INF-\033[0;32m el proceso pprincipal.sh  \t \t...... no esta en ejecucion \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:49:44-INF-\033[0;32m [pprincipal.sh] ya esta en ejecución... proceso Nº 5900 \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:49:44-INF-\033[0;32m proceso Nº 5900 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:49:46-WAR-\033[0;33m [pprincipal.sh] NO esta en ejecución... \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:49:46-INF-\033[0;32m el proceso pprincipal.sh  \t \t...... no esta en ejecucion \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:50:18-INF-\033[0;32m [pprincipal.sh] ya esta en ejecución... proceso Nº 6068 \033[0m-./estaEnEjecucion.sh-isaac
+11/24/20 11:50:18-INF-\033[0;32m proceso Nº 6068 \t \t...... detenido \033[0m-./frenarProceso.sh-isaac
+11/24/20 11:57:43-INF-\033[0;32m El ambiente esta inicializado \033[0m-./ambienteInicializado.sh-isaac
+11/24/20 11:57:48-WAR-\033[0;33m modo de invocación [./arrancarPeroceso.sh] [nombreProceso] \033[0m-./arrancarProceso.sh-isaac

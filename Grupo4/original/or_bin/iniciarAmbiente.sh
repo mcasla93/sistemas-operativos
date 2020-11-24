@@ -218,7 +218,7 @@ if [[ $isInstalled_return -eq $OK ]]; then
 
 	else
 		# el ambiente no esta inicializado veo el modo de invocacion
-		if [ "$0" != "/bin/bash" ];
+		if [ "$0" != "/bin/bash" ] && [ "$0" != "/bash" ];
 		then
 			log "${TYPES[1]}" "${ORANGE} La primera vez debe iniciar con permisos [. ./IniciarAmbiente.sh]${NC}" "$0";    
 		else
@@ -272,3 +272,4 @@ else
 	log "${TYPES[1]}" "${ORANGE}El archivo de configuracion no existe, Debe ejecutar [instalarTP.sh]${NC}" "$0";
 fi
 
+cd ./bin
