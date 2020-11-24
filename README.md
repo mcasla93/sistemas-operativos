@@ -145,10 +145,42 @@ Nota: al borrar el archivo .conf el script detecta como que el programa nunca ha
 		
 		![InicializacionAmbiente](/assets/images/ArchivoConfNoExiste.png)
 
+	2. #### Errores en los archivos necesarios
+		En caso de que falte alguna carpeta o script de ejecucion u otros, el programa le informara tal situacion y terminará la ejecución
+		informando que la instalación es incorrécta.
+
+		![Errores](/assets/images/Errores.png)
+		![Errores](/assets/images/Errores2.png)
+
+		NOTA: En todos estos casos, el archivo de configuracion es correcto, solamente faltan elementos para la correcta ejecucion, por ejemplo carpetas o scripts,
+		el ambiente será inicializado pero el proceso principal no sera ejecutado, esto no interfiere con la reinstalación porque simplemente se setearon variables de ambiente.
+
+	Una vez que el ambiente este inicializado, ante cualquier intento de volver a iniciar se indicará que debe Frenar el proceso, para poder reiniciarlo, si lo que deséa es volver a inicializar, 
+	entonces deberá loguearse nuevamente.
+
+
+	![InicializacionAmbiente](/assets/images/Reinicio.png)
+
 
 2. #### Frenar Proceso
-	El inicializador de ambiente, informará si hay algún error, y en caso de querer terminar el proceso 
-	de utilizar frenarProceso.sh
+	Una vez que el proceso principal ya esté en ejecución, el usuario podrá detenerlo por cualqueir razón.
+
+	Deberá ubicarse dentro del directorio de instalación en la carpeta bin, que contiene todos los scripts de ejecición y llamar a.
+
+	./frenarProceso.sh pprincipal.sh
+
+	El modo de invocación siempre será pasandole el nombre del proceso principal [pprincipal.sh] de otro modo no funciona
+	
+	![InicializacionAmbiente](/assets/images/frenar.png)
+	
+	NOTA: Si se pasa otro nombre, el script tambien lo finalizará pero el resultado puede ser impredescible si se trata de un proceso del sistema operativo.
+
+	#### HIPÓTESIS
+	El script siempre de ser llamado una vez inicializado el ambiente, de lo contrario lanzará un error, y además tambien lanzará mensajes de permisos denegados.
+
+	![InicializacionAmbiente](/assets/images/frenarError.png)
+	
+	
 
 3. #### Arrancar proceso
 
