@@ -188,7 +188,7 @@ Nota: al borrar el archivo .conf el script detecta como que el programa nunca ha
 	El script siempre de ser llamado una vez inicializado el ambiente, de lo contrario lanzará un error, y además tambien lanzará mensajes de permisos denegados.
 
 	![InicializacionAmbiente](/assets/images/frenarError.png)
-	
+
 	
 
 3. #### Arrancar proceso
