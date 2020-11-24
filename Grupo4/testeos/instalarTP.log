@@ -1,0 +1,69 @@
+11/24/20 13:21:40-INF-\n\033[0;32m################## EJECUTANDO INSTALADOR instalarTP.sh ##################\033[0m\n-./instalarTP.sh-agustin
+11/24/20 13:21:40-WAR-\033[1;33m/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508/instalarTP.conf no existe\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:40-INF-Instalar o Salir? I/S-./instalarTP.sh-agustin
+11/24/20 13:21:43-INF-\033[0;32m################## Proceso de instalacion ##################\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:43-INF-Escriba el nombre del directorio, para aceptar el por defecto presione ENTER-./instalarTP.sh-agustin
+11/24/20 13:21:43-INF-Directorio de ejecutables: \033[0;32mbin\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:43-INF--./instalarTP.sh-agustin
+11/24/20 13:21:43-INF-Directorio de tablas maestras: \033[0;32mmaster\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:44-INF--./instalarTP.sh-agustin
+11/24/20 13:21:44-INF-Directorio de novedades: \033[0;32minput\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:44-INF--./instalarTP.sh-agustin
+11/24/20 13:21:44-INF-Directorio de rechazados: \033[0;32mrechazos\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:44-INF--./instalarTP.sh-agustin
+11/24/20 13:21:44-INF-Directorio de lotes procesados: \033[0;32mlotes\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:44-INF--./instalarTP.sh-agustin
+11/24/20 13:21:44-INF-Directorio de transacciones: \033[0;32moutput\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:44-INF--./instalarTP.sh-agustin
+11/24/20 13:21:44-INF-TP1 SO7508 2° Cuatrimestre 2020 Curso Martes Copyright @ Grupo 4-./instalarTP.sh-agustin
+11/24/20 13:21:44-INF-Tipo de proceso:\tINSTALACION-./instalarTP.sh-agustin
+11/24/20 13:21:44-INF-Directorio Padre:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4-./instalarTP.sh-agustin
+11/24/20 13:21:44-INF-Ubicación script de instalación:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508/instalarTP.sh-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Log de la instalacion:	/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508/instalarTP.log-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Archivo de configuracion:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508/instalarTP.conf-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Log de la inicializacion:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508/iniciarambiente.log-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Log del proceso principal:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508/pprincipal.log-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Directorio de ejecutables:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/bin-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Directorio de tablas maestras:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/master-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Directorio de novedades:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/input-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Directorio de rechazados:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/rechazos-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Directorio de lotes procesados:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/lotes-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Directorio de transacciones:\t/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/output-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-Estado de la INSTALACION:\tLISTA-./instalarTP.sh-agustin
+11/24/20 13:21:45-INF-¿Confirma la instalacion? (SI-NO)-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-mkdir: created directory 'bin'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-mkdir: created directory 'master'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-mkdir: created directory 'input'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-mkdir: created directory 'rechazos'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-mkdir: created directory 'lotes'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-mkdir: created directory 'output'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-mkdir: created directory 'input/ok'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-mkdir: created directory 'output/comisiones'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-'/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/original/or_bin/ambienteInicializado.sh' -> '/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/bin/ambienteInicializado.sh'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-'/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/original/or_bin/arrancarProceso.sh' -> '/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/bin/arrancarProceso.sh'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-'/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/original/or_bin/estaEnEjecucion.sh' -> '/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/bin/estaEnEjecucion.sh'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-'/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/original/or_bin/frenarProceso.sh' -> '/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/bin/frenarProceso.sh'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-'/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/original/or_bin/iniciarAmbiente.sh' -> '/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/bin/iniciarAmbiente.sh'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-'/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/original/or_bin/pprincipal.sh' -> '/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/bin/pprincipal.sh'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-'/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/original/or_master/comercios.txt' -> '/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/master/comercios.txt'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-'/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/original/or_master/tarjetashomologadas.txt' -> '/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/master/tarjetashomologadas.txt'-./instalarTP.sh-agustin
+11/24/20 13:21:46-INF-\033[0;32mEstado de la instalacion:\tCOMPLETADA\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\n\033[0;32m################## EJECUTANDO INSTALADOR instalarTP.sh ##################\033[0m\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: /home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508/instalarTP.conf\033[0m-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\n\033[0;32m################## VERIFICANDO ARCHIVO DE CONFIGURACION ##################\033[0m\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: GRUPO\033[0m\n - Path: /home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: DIRINST\033[0m\n - Path: /home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: DIRBIN\033[0m\n - Path: /home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/bin\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: DIRMAE\033[0m\n - Path: /home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/master\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: DIRIN\033[0m\n - Path: /home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/input\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: DIRRECH\033[0m\n - Path: /home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/rechazos\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: DIRPROC\033[0m\n - Path: /home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/lotes\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: DIROUT\033[0m\n - Path: /home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/output\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-INSTALACION-11/24/20 13:21:46-agustin\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\n\033[0;32m################## VERIFICANDO ARCHIVOS EN so7508 ##################\033[0m\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: instalarTP.sh\033[0m\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: instalarTP.log\033[0m\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mOK: instalarTP.conf\033[0m\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-WAR-\033[1;33mWARNING: iniciarambiente.log no existe\033[0m\n - Path:/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508/iniciarambiente.log\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-WAR-\033[1;33mWARNING: pprincipal.log no existe\033[0m\n - Path:/home/agustin/Documents/Sistemas Operativos/Trabajo Practico/sistemas-operativos-main/Grupo4/so7508/pprincipal.log\n-./instalarTP.sh-agustin
+11/24/20 13:21:48-INF-\033[0;32mSistema se encuentra instalado correctamente, saliendo...\033[0m-./instalarTP.sh-agustin

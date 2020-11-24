@@ -6,16 +6,16 @@
    Descarga del paquete
 ********************************************************************************************
 
-### Descarga
+### Guia para la descarga del sistema
 
-1. Ir al preositorio de GitHub
-[Repo](https://github.com/mcasla93/sistemas-operativos).
+1. Ir al [repositorio](https://github.com/mcasla93/sistemas-operativos).
+ de GitHub
 
-2. Ir a la sección Release y descargar el source.zip de la ultima versión
+2. Ir a la sección Releases y descargar el source.zip de la ultima versión
 
 3. Una vez descargado descomprimir el .zip.
 
-El .zip consta de una carpeta Grupo4 que es el paquete de instalación, este README.md y el informe (informe.md)
+El .zip consta de una carpeta Grupo4( que es el paquete de instalación), este README.md y el informe (informe.md)
 
 ********************************************************************************************
    Requisitos de instalación
